@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Vụ Án Mất Tích Ở Phòng Thí Nghiệm</title>
+<style>
+:root{--bg:#07111f;--panel:#101f32;--panel2:#152941;--cyan:#65f0e2;--pink:#ff6e91;--gold:#ffd166;--text:#edf7ff;--muted:#a9bdd0;--green:#73f0a5}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#173957 0,#07111f 42%,#050b14 100%);color:var(--text);font-family:"Courier New",Consolas,monospace; font-size:18px; min-height:100vh}
+header{padding:28px 18px 18px;text-align:center;border-bottom:1px solid #29445d;background:#081321cc}
+.eyebrow{color:var(--cyan);font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;font-weight:800}
+h1{font-family:"Courier New",Consolas,monospace;font-size:clamp(.95rem,2.4vw,1.7rem);line-height:1.12;margin:10px auto;max-width:900px}
+header p{color:var(--muted);margin:8px auto;max-width:750px}
+.wrap{max-width:1050px;margin:24px auto;padding:0 16px 40px}
+.status{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stat,.card{background:linear-gradient(145deg,#13263b,#0c1929);border:1px solid #2b4962;border-radius:16px;padding:15px;box-shadow:0 12px 35px #0002}
+.stat small{display:block;color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}.stat strong{font-size:1.2rem;color:var(--cyan)}
+.progress{height:6px;background:#1d344b;border-radius:9px;overflow:hidden;margin-top:9px}.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--cyan),#b3fff6);transition:width .3s}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.card h2{font-family:"Courier New",Consolas,monospace;margin:0 0 12px;font-size:clamp(.68rem,1.4vw,.95rem);line-height:1.7}.tag{display:inline-block;border:1px solid #42617b;color:var(--cyan);padding:4px 9px;border-radius:30px;font-size:.75rem;font-weight:700;margin-bottom:10px}
+p{line-height:1.55}.muted{color:var(--muted)}.story{font-size:1.02rem}.terminal{background:#06101b;border:1px solid #29445d;border-radius:12px;padding:13px;color:#b9ffe9;font-family:ui-monospace,monospace;line-height:1.6;margin:12px 0}
+button,input{font:inherit} button{font-family:"Courier New",Consolas,monospace;font-size:1.12rem} .tag,.eyebrow,.stat small,.world-label{font-family:"Courier New",Consolas,monospace;font-size:.58rem;line-height:1.7}button{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer;transition:transform .12s,filter .12s}button:hover{filter:brightness(1.1);transform:translateY(-1px)}button:focus-visible,input:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.primary{background:var(--cyan);color:#05212a}.secondary{background:#203951;color:var(--text);border:1px solid #41627b}.choice{display:block;width:100%;text-align:left;background:#142940;color:var(--text);border:1px solid #35516a;margin:8px 0;padding:12px 14px}.choice.correct{border-color:var(--green);background:#12372f}.choice.wrong{border-color:var(--pink);background:#3a1b2a}
+input{width:100%;background:#071421;border:1px solid #41627b;color:var(--text);border-radius:10px;padding:12px;margin:7px 0 12px}
+.feedback{padding:11px 13px;border-radius:10px;margin:12px 0;display:none;line-height:1.45}.feedback.show{display:block}.feedback.good{background:#103629;border:1px solid #398c6b}.feedback.bad{background:#3b1b2a;border:1px solid #a64862}
+.stage{display:none}.stage.active{display:block}.suspects{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}.suspect{background:#102239;border:1px solid #35516a;border-radius:12px;padding:12px;text-align:center}.suspect b{display:block;color:var(--gold);margin-bottom:4px}
+.badge{display:none;text-align:center;padding:25px;border:1px solid var(--gold);border-radius:16px;background:linear-gradient(145deg,#3b321b,#121e2d)}.badge.show{display:block}.medal{font-size:3.5rem}.badge h2{color:var(--gold)}
+footer{text-align:center;color:#6f879d;font-size:.8rem;padding:0 12px 25px}
+#alarmOverlay{position:fixed;inset:0;pointer-events:none;z-index:99;opacity:0;background:#ff173d;mix-blend-mode:screen}
+#alarmOverlay.flash{animation:redFlash .65s ease-out}
+@keyframes redFlash{0%,35%{opacity:.48}100%{opacity:0}}
+.wrap.shake{animation:screenShake .42s ease-in-out}
+@keyframes screenShake{0%,100%{transform:translate(0,0)}15%{transform:translate(-7px,3px)}30%{transform:translate(6px,-4px)}45%{transform:translate(-5px,-2px)}60%{transform:translate(5px,4px)}75%{transform:translate(-3px,1px)}}
+.soundbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px auto 0}
+.soundbar button{font-size:.85rem;padding:8px 12px}
+.signal{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;color:var(--muted);margin-top:10px}
+.signal i{display:inline-block;width:10px;height:10px;border-radius:50%;background:#506579;box-shadow:0 0 0 transparent}
+.signal.alert i{background:#ff385c;box-shadow:0 0 14px #ff385c;animation:signalBlink .25s alternate 4}
+@keyframes signalBlink{to{opacity:.2}}
+.cast{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0}
+.actor{position:relative;background:#0a1726;border:1px solid #29445d;border-radius:14px;padding:12px;text-align:center;min-width:0}
+.actor .avatar{font-size:2.5rem;display:block;filter:drop-shadow(0 4px 8px #0008);transition:transform .25s}
+.actor.active .avatar{animation:floaty 1.4s ease-in-out infinite}
+@keyframes floaty{50%{transform:translateY(-5px) rotate(2deg)}}
+.actor strong{display:block;color:var(--gold);font-size:.9rem}.actor small{color:var(--muted)}
+.actor.speaking{border-color:var(--cyan);box-shadow:0 0 18px #65f0e233}
+.movebox{background:#081522;border:1px solid #29445d;border-radius:12px;padding:12px;margin-top:12px}
+.movehead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#detective{display:inline-block;font-size:1.4rem;transition:transform .16s}
+.pad{display:grid;grid-template-columns:repeat(3,38px);gap:5px;justify-content:center;margin:10px auto}
+.pad button{padding:7px 0;background:#203951;color:white;border:1px solid #41627b}
+.pad button:nth-child(1){grid-column:2}.pad button:nth-child(2){grid-column:1;grid-row:2}.pad button:nth-child(3){grid-column:2;grid-row:2}.pad button:nth-child(4){grid-column:3;grid-row:2}
+
+/* Pixel-font incident alerts, victory and failure screens */
+#threatOverlay,#endOverlay{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:18px;background:#050812eF;text-align:center}
+#threatOverlay.show,#endOverlay.show{display:flex}
+.alert-window{width:min(720px,100%);padding:24px;border:4px solid #ff355e;background:repeating-linear-gradient(0deg,#260b19 0 8px,#320d20 8px 16px);box-shadow:0 0 0 6px #080d18,0 0 40px #ff174c88;animation:alertPulse .45s steps(2,end) infinite}
+.alert-window h2{font-family:"Courier New",Consolas,monospace;color:#ff5475;font-size:clamp(.8rem,2vw,1.2rem);line-height:1.8}
+.alert-window p{font-size:1.45rem;line-height:1.4}
+@keyframes alertPulse{50%{border-color:#ffb4c4;filter:brightness(1.25)}}
+#endOverlay{background:#05060af2;z-index:250}.end-panel{width:min(760px,100%);padding:26px;border:4px solid var(--cyan);background:#0b1c2c;box-shadow:0 0 0 6px #02070c,0 0 40px #65f0e255}
+.end-panel.fail{border-color:#ff355e;animation:failurePulse .5s steps(2,end) infinite}.end-panel.win{border-color:#ffd166;animation:victoryGlow 1s ease-in-out infinite alternate}
+.end-panel h2{font-family:"Courier New",Consolas,monospace;font-size:clamp(.8rem,2vw,1.25rem);line-height:1.8}.end-panel.fail h2{color:#ff355e}.end-panel.win h2{color:#ffd166}
+@keyframes failurePulse{to{box-shadow:0 0 0 6px #02070c,0 0 55px #ff173d}}
+@keyframes victoryGlow{to{box-shadow:0 0 0 6px #02070c,0 0 45px #ffd166aa}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:240;overflow:hidden}.confetti i{position:absolute;top:-20px;width:10px;height:16px;background:var(--gold);animation:confettiFall 2.8s linear forwards}.confetti i:nth-child(3n){background:var(--cyan)}.confetti i:nth-child(3n + 1){background:#ff6e91}
+@keyframes confettiFall{to{transform:translateY(110vh) rotate(900deg)}}
+.case-file{display:none;margin-top:16px;padding:16px;border:3px dashed var(--gold);background:#101d2a}
+.case-file.show{display:block}.case-file h3{font-family:"Courier New",Consolas,monospace;color:var(--gold);font-size:.78rem;line-height:1.8}
+.suspect-choice{display:flex;align-items:center;gap:10px;text-align:left;width:100%;margin:8px 0;background:#13263b;color:var(--text);border:2px solid #3a566d;border-radius:4px}
+.suspect-choice.selected{border-color:var(--gold);background:#3a3019;box-shadow:0 0 0 2px #ffd16633}
+body.critical{animation:criticalBody .4s steps(2,end) infinite}@keyframes criticalBody{50%{background:#310916}}
+@media(max-width:760px){.cast{grid-template-columns:1fr 1fr}.actor:last-child{grid-column:1/-1}}
+@media(max-width:760px){.grid{grid-template-columns:1fr}.status{gap:7px}.stat{padding:11px}.stat strong{font-size:1rem}.suspects{grid-template-columns:1fr}}
+
+/* Pixel-art cast and playable lab scene */
+.pixel-cast .actor{padding:10px 8px;image-rendering:pixelated}
+.portrait{height:112px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pixel-sprite{width:82px;height:104px;image-rendering:pixelated;shape-rendering:crispEdges;filter:drop-shadow(0 5px 0 #0005);overflow:visible}
+.pixel-cast .pixel-sprite{animation:pixelIdle 1.1s steps(2,end) infinite}
+.actor.speaking .pixel-sprite{animation:pixelTalk .22s steps(2,end) infinite}
+.actor:not(.speaking) .pixel-sprite{animation:pixelIdle 1.1s steps(2,end) infinite}
+@keyframes pixelIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pixelTalk{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.035)}}
+.game-world{position:relative;width:100%;height:560px;overflow:hidden;margin:12px 0 8px;border:4px solid #38536d;border-radius:8px;background-color:#14263a;background-image:linear-gradient(#233b53 2px,transparent 2px),linear-gradient(90deg,#233b53 2px,transparent 2px),linear-gradient(180deg,#1d3850 0 58%,#263b4b 58% 100%);background-size:32px 32px,32px 32px,100% 100%;box-shadow:inset 0 0 0 4px #091522,inset 0 -20px 0 #101e2c;outline:none}
+.game-world:focus{border-color:var(--cyan);box-shadow:0 0 0 2px #65f0e255,inset 0 0 0 4px #091522}
+.world-label{position:absolute;left:12px;top:10px;padding:5px 8px;background:#071421d9;border:2px solid #496b83;color:#b8fff2;font:700 11px "Courier New",Consolas,monospace;letter-spacing:1px}
+.pixel-prop{position:absolute;image-rendering:pixelated;box-shadow:4px 4px 0 #07111f88}
+.prop-desk{left:10%;bottom:44px;width:150px;height:58px;background:#79533e;border:5px solid #b98a55}
+.prop-desk:before{content:"";position:absolute;left:12px;right:12px;top:-18px;height:18px;background:#d4b57b;border:4px solid #79533e}
+.prop-desk:after{content:"";position:absolute;left:12px;bottom:-28px;width:12px;height:26px;background:#79533e;box-shadow:105px 0 #79533e}
+.prop-tube{right:12%;bottom:58px;width:30px;height:82px;background:#65f0e2;border:5px solid #c8fff9;border-top:12px solid #8ca9c0;border-radius:2px;box-shadow:12px 0 0 #f1c85a,-12px 0 0 #c85f8c}
+.prop-computer{right:28%;top:60px;width:94px;height:62px;background:#45677d;border:6px solid #9ab5c8}
+.prop-computer:before{content:"";position:absolute;inset:8px;background:repeating-linear-gradient(0deg,#65f0e2 0 5px,#286c7d 5px 10px)}
+.prop-computer:after{content:"";position:absolute;width:14px;height:17px;left:34px;bottom:-23px;background:#9ab5c8;box-shadow:-14px 17px 0 0 #9ab5c8,14px 17px 0 0 #9ab5c8}
+.player{position:absolute;left:50%;top:58%;width:76px;height:96px;transform:translate(-50%,-50%);z-index:5;transition:left .13s linear,top .13s linear;image-rendering:pixelated}
+.player-sprite{width:76px;height:96px;display:block;position:relative;z-index:2}
+.player-shadow{position:absolute;bottom:-1px;left:17px;width:42px;height:8px;background:#07111f99;image-rendering:pixelated}
+.player.moving .player-sprite{animation:pixelWalk .16s steps(2,end) infinite}
+.player.moving .player-shadow{transform:scaleX(.8)}
+@keyframes pixelWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.move-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.pad{display:grid;grid-template-columns:repeat(3,54px);gap:6px;justify-content:center;margin:8px auto}
+.pad button{min-height:48px;padding:7px 0;background:#203951;color:white;border:2px solid #41627b;border-radius:5px;box-shadow:0 4px 0 #081522;touch-action:manipulation}
+.pad button:active{transform:translateY(3px);box-shadow:0 1px 0 #081522}
+.pad button:nth-child(1){grid-column:2}.pad button:nth-child(2){grid-column:1;grid-row:2}.pad button:nth-child(3){grid-column:2;grid-row:2}.pad button:nth-child(4){grid-column:3;grid-row:2}
+@media(max-width:760px){.game-world{height:440px}.prop-desk{transform:scale(.75);transform-origin:bottom left}.pixel-cast .actor:last-child{grid-column:auto}.portrait{height:92px}.pixel-sprite{height:88px;width:68px}}
+
+
+/* Laboratory atmosphere: wall panels, pipes, warning lights and interactive pixel props */
+body{background-color:#07111f;background-image:radial-gradient(ellipse at 12% 12%,#1a4861aa 0,transparent 28%),radial-gradient(ellipse at 88% 18%,#173d52aa 0,transparent 24%),repeating-linear-gradient(90deg,transparent 0 78px,#17314933 79px 82px),repeating-linear-gradient(0deg,transparent 0 78px,#17314922 79px 82px),linear-gradient(180deg,#0a1a2a,#050b14 72%);background-attachment:fixed}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.32;background:repeating-linear-gradient(90deg,transparent 0 15%,#65f0e20a 15.1% 15.3%,transparent 15.4% 30%),radial-gradient(circle at 20% 8%,#65f0e211 0 2px,transparent 3px);z-index:-1}
+.game-world{background-color:#172b3b;background-image:linear-gradient(#2a465b 2px,transparent 2px),linear-gradient(90deg,#2a465b 2px,transparent 2px),linear-gradient(180deg,#203b51 0 55%,#344653 55% 58%,#263b4b 58% 100%);background-size:32px 32px,32px 32px,100% 100%}
+.game-world:after{content:"";position:absolute;left:0;right:0;top:54%;height:7px;background:repeating-linear-gradient(90deg,#f2c65d 0 22px,#1d2e3c 22px 44px);opacity:.5;pointer-events:none}
+.lab-window{position:absolute;left:37%;top:8%;width:24%;height:24%;border:6px solid #738da0;background:#102b3d;box-shadow:inset 0 0 0 4px #1b5066,0 5px 0 #0a1726}
+.lab-window:before,.lab-window:after{content:"";position:absolute;background:#5d8296}.lab-window:before{width:5px;left:50%;top:0;bottom:0}.lab-window:after{height:5px;top:50%;left:0;right:0}
+.lab-window span{position:absolute;right:12%;top:12%;color:#e5f8ff;font-size:18px;z-index:1}.lab-window i{position:absolute;width:5px;height:5px;background:#65f0e2;top:25%;left:18%;box-shadow:12px 16px #65f0e2,26px 3px #65f0e2;animation:twinkle 1.5s steps(2) infinite}.lab-window b{position:absolute;left:4px;bottom:-24px;color:#9db7c9;font:700 9px "Courier New",Consolas,monospace;letter-spacing:2px}
+@keyframes twinkle{50%{opacity:.15}}
+.shelf{position:absolute;right:3%;top:9%;width:17%;height:30%;border:5px solid #78583f;background:repeating-linear-gradient(180deg,#a77b51 0 5px,#513d32 5px 9px,#a77b51 9px 14px);display:flex;justify-content:space-around;align-items:flex-start;padding-top:6px;gap:2px;box-shadow:4px 4px #0b1722}.shelf span{font-size:20px;color:#73f0a5;text-shadow:2px 2px #0a1726;animation:liquidGlow 2s ease-in-out infinite}.shelf span:nth-child(2){color:#ff6e91;animation-delay:.3s}.shelf span:nth-child(3){color:#65f0e2;animation-delay:.6s}.shelf span:nth-child(4){color:#ffd166;animation-delay:.9s}.shelf small{position:absolute;bottom:-19px;left:0;color:#d5c2a9;font:8px monospace;white-space:nowrap}
+@keyframes liquidGlow{50%{filter:brightness(1.7);transform:translateY(-2px)}}
+.lab-object{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;background:transparent;border:0;border-radius:3px;color:#edf7ff;box-shadow:none;min-width:0;transition:filter .12s,transform .12s;touch-action:manipulation}.lab-object:hover,.lab-object:focus-visible{filter:brightness(1.35);transform:translateY(-3px);outline:2px solid #65f0e2;outline-offset:3px}.obj-art{display:grid;place-items:center;min-width:40px;height:38px;padding:3px 8px;border:4px solid #6e8da0;background:#24445a;color:#65f0e2;font-size:23px;line-height:1;box-shadow:4px 4px #0b1726;font-family:monospace}.object-label{font-size:10px;line-height:1.2;padding:3px 5px;background:#071421e8;border:1px solid #49657a;color:#effaff;white-space:nowrap;text-shadow:1px 1px #000}
+.obj-desk{left:6%;bottom:11%;width:24%}.obj-desk .obj-art{width:100%;height:46px;color:#f2c77a;background:repeating-linear-gradient(0deg,#79533e 0 8px,#a77a4d 8px 12px);border-color:#c29560}
+.obj-potion{right:7%;bottom:17%;width:13%}.obj-potion .obj-art{height:62px;width:43px;font-size:30px;background:#17424c;color:#65f0e2;border-color:#b4e9e5;animation:potionPulse 1.8s ease-in-out infinite}.sparkle{position:absolute;right:5px;top:0;color:#ffd166;animation:twinkle .7s steps(2) infinite}
+@keyframes potionPulse{50%{box-shadow:0 0 14px #65f0e277,4px 4px #0b1726}}
+.obj-computer{left:42%;top:35%}.obj-computer .obj-art{width:58px;height:42px;background:#23465a;color:#65f0e2;box-shadow:0 8px 0 -3px #9ab5c8,4px 4px #0b1726}
+.obj-notes{left:27%;top:62%}.obj-notes .obj-art{background:#d9c99c;color:#3e5263;border-color:#8f7657;transform:rotate(-4deg)}
+.obj-locker{right:3%;top:47%}.obj-locker .obj-art{height:65px;width:44px;background:repeating-linear-gradient(90deg,#506b7a 0 5px,#7792a0 5px 8px);color:#ffd166;border-color:#9ab0b9}
+.obj-microscope{left:57%;bottom:12%}.obj-microscope .obj-art{background:#24374b;color:#c4e7ff;border-color:#8ba9bd;font-size:27px}
+.professor-npc{position:absolute;left:34%;bottom:8%;width:76px;z-index:4;display:flex;flex-direction:column;align-items:center;animation:npcPace 4.8s ease-in-out infinite alternate}.npc-sprite{width:70px;height:86px;animation:worriedIdle 1s ease-in-out infinite}.professor-npc b,.assistant-npc b{font-size:9px;color:#ffd166;background:#071421e8;border:1px solid #49657a;padding:3px 5px;white-space:nowrap}.npc-bubble{position:absolute;bottom:100%;left:-38px;width:145px;padding:6px;background:#fff5d7;color:#4a3a2b;border:3px solid #9c8254;border-radius:3px;font-size:9px;line-height:1.3;text-align:center;box-shadow:3px 3px #091522;animation:bubbleBob 2s ease-in-out infinite}
+@keyframes npcPace{0%{transform:translateX(-7px)}100%{transform:translateX(12px)}}@keyframes worriedIdle{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-4px) rotate(1deg)}}@keyframes bubbleBob{50%{transform:translateY(-3px)}}
+.assistant-npc{position:absolute;left:68%;top:39%;z-index:4;display:flex;flex-direction:column;align-items:center;gap:2px;animation:droneFloat 2.1s ease-in-out infinite}.assistant-npc span{font-size:34px;filter:drop-shadow(0 0 8px #65f0e277);image-rendering:pixelated}.assistant-npc b{color:#65f0e2}@keyframes droneFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+.player{z-index:6}.player-sprite{animation:pixelIdle 1.1s steps(2,end) infinite}.player.moving .player-sprite{animation:pixelWalk .16s steps(2,end) infinite}
+.object-info{display:flex;gap:8px;align-items:flex-start;flex-direction:column;margin:8px 0;padding:11px 13px;border:2px solid #38566d;background:#0a1726;color:#d9edf8;min-height:62px}.object-info strong{color:#65f0e2;font:700 12px ui-monospace,monospace;letter-spacing:.04em}.object-info span{font-size:.9rem;line-height:1.45}
+@media(max-width:600px){.game-world{height:360px}.obj-art{transform:scale(.85)}.object-label{font-size:8px}.professor-npc{left:30%;}.assistant-npc{left:68%}.lab-window{left:35%;width:25%}.shelf{width:19%}}
+
+
+/* Readable, offline-safe typography with clear size hierarchy and Vietnamese glyph support */
+body{font-family:"Trebuchet MS",Arial,sans-serif;font-size:17px;line-height:1.55}
+h1,.card h2,.alert-window h2,.end-panel h2,.case-file h3{font-family:"Courier New",Consolas,monospace;font-weight:900;letter-spacing:-.035em;overflow-wrap:anywhere}
+h1{font-size:clamp(1.35rem,3.6vw,2.35rem);line-height:1.18}
+.card h2{font-size:clamp(1.05rem,2.2vw,1.35rem);line-height:1.35}
+button,input{font-family:"Trebuchet MS",Arial,sans-serif;font-size:1rem}
+.tag,.eyebrow,.stat small,.world-label{font-family:"Courier New",Consolas,monospace;font-size:.72rem;line-height:1.45;letter-spacing:.04em}
+.terminal{font-family:Consolas,"Courier New",monospace;font-size:.95rem;overflow-wrap:anywhere}
+.story{font-size:1.05rem}
+
+
+.cutscene{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;padding:16px;background:#030811f5}
+.cutscene.show{display:flex}.cutscene-frame{width:min(820px,100%);max-height:94vh;overflow:auto;background:#0b1b2a;border:4px solid #65f0e2;box-shadow:0 0 0 6px #02070c,0 0 55px #65f0e255;padding:clamp(16px,4vw,30px);text-align:center}
+.cutscene-kicker{font:900 .8rem "Courier New",monospace;color:#65f0e2;letter-spacing:.14em;margin-bottom:12px}.cutscene-frame h2{font:900 clamp(1.1rem,3vw,1.8rem) "Courier New",monospace;line-height:1.25;color:#ffd166}.cutscene-frame p{font-size:1rem;max-width:680px;margin:12px auto;line-height:1.6}
+.cutscene-art{height:180px;position:relative;overflow:hidden;margin:10px auto 18px;max-width:580px;border:4px solid #42617b;background:linear-gradient(#101f3b 0 70%,#354552 70%);image-rendering:pixelated}
+.cutscene-art:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 49%,#36516a 49% 51%,transparent 51%),linear-gradient(transparent 49%,#36516a 49% 51%,transparent 51%);background-size:32px 32px;opacity:.55}
+.cutscene-window{position:absolute;left:28%;top:12%;width:35%;height:40%;border:6px solid #8ba9bd;background:#102b48;box-shadow:inset 0 0 0 4px #65f0e2}.cutscene-moon{position:absolute;left:43%;top:13%;z-index:1;color:#ffd166;font-size:28px}.cutscene-shelf{position:absolute;right:5%;top:14%;width:18%;height:48px;border:5px solid #8c6346;background:#ad8355;color:#73f0a5;font-size:25px}.cutscene-table{position:absolute;left:8%;bottom:24px;width:36%;height:28px;background:#956b4a;border:5px solid #d0a36d}.cutscene-bottle{position:absolute;left:20%;bottom:52px;color:#65f0e2;font-size:30px;animation:bottlePulse .7s steps(2) infinite}.cutscene-person{position:absolute;right:26%;bottom:16px;font:900 20px/1.05 monospace;color:#f2c7a5;text-shadow:5px 0 #3b5d83,-5px 0 #3b5d83;animation:pixelIdle 1s steps(2) infinite}.cutscene-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0 5px,#0002 6px 7px);pointer-events:none}@keyframes bottlePulse{50%{filter:brightness(1.8);transform:translateY(-3px)}}
+#assistantCompanion{position:fixed;left:12px;bottom:12px;z-index:80;display:flex;align-items:flex-end;gap:10px;max-width:min(360px,calc(100vw - 24px));pointer-events:none;filter:drop-shadow(0 4px 10px #0008)}
+.companion-avatar{width:58px;height:58px;flex:0 0 58px;display:grid;place-items:center;background:#15334a;border:3px solid #65f0e2;border-radius:5px;font-size:31px;animation:droneFloat 2s ease-in-out infinite}.companion-copy{background:#f3f4dd;color:#172536;border:3px solid #65f0e2;padding:9px 11px;border-radius:5px;line-height:1.35;min-width:0}.companion-copy b{display:block;font:900 .68rem "Courier New",monospace;color:#146477;margin-bottom:4px}.companion-copy span{font-size:.88rem;display:block}
+.room-nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:12px 0;padding:10px;background:#0a1726;border:2px solid #38566d}.room-nav strong{font:900 .7rem "Courier New",monospace;color:#65f0e2;width:100%}.room-nav .room-btn{font-size:.83rem;padding:7px 10px;border-radius:4px}.room-nav .room-btn.active{background:#65f0e2;color:#05212a;border-color:#65f0e2}.room-nav span{font-size:.82rem;color:#a9bdd0;width:100%}.room-nav .room-progress{color:#65f0e2;font-weight:800}.lab-object.answered-object{opacity:.48;filter:grayscale(.8)}.lab-object.answered-object .object-label:after{content:' ✓';color:#65f0e2;font-weight:900}.completion-notice{position:fixed;inset:0;z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;background:#030914d9;backdrop-filter:blur(5px)}.completion-notice[hidden]{display:none}.completion-card{width:min(620px,100%);padding:28px;border:4px solid #65f0e2;background:linear-gradient(145deg,#132b40,#071421);box-shadow:0 0 0 6px #02070c,0 0 45px #65f0e266;text-align:center}.completion-card h2{color:#ffd166;font-size:clamp(1.3rem,4vw,2rem);line-height:1.35}.completion-card p{line-height:1.7}.completion-card button{margin-top:12px}
+.game-world.room-computer{background-image:linear-gradient(#1c3650 2px,transparent 2px),linear-gradient(90deg,#1c3650 2px,transparent 2px),linear-gradient(180deg,#152c47 0 55%,#2b3a4a 55% 100%)}.game-world.room-storage{background-image:linear-gradient(#263d4c 2px,transparent 2px),linear-gradient(90deg,#263d4c 2px,transparent 2px),linear-gradient(180deg,#18303a 0 55%,#3d4b4b 55% 100%)}.game-world.room-hall{background-image:linear-gradient(#26344b 2px,transparent 2px),linear-gradient(90deg,#26344b 2px,transparent 2px),linear-gradient(180deg,#101e32 0 55%,#323848 55% 100%)}
+.game-world{height:560px;min-height:560px;border-width:6px;background-size:28px 28px,28px 28px,100% 100%;}
+.game-world.room-computer{background-color:#101b3b;background-image:radial-gradient(ellipse at 50% 15%,#3b65a455,transparent 38%),linear-gradient(#27375d 2px,transparent 2px),linear-gradient(90deg,#27375d 2px,transparent 2px),linear-gradient(180deg,#142747 0 56%,#303c58 56% 100%);}
+.game-world.room-storage{background-color:#26362e;background-image:radial-gradient(ellipse at 70% 25%,#9cbb5c22,transparent 32%),linear-gradient(#344b3a 2px,transparent 2px),linear-gradient(90deg,#344b3a 2px,transparent 2px),linear-gradient(180deg,#243a31 0 56%,#4b5543 56% 100%);}
+.game-world.room-hall{background-color:#111a2a;background-image:radial-gradient(ellipse at 50% 8%,#7389a533,transparent 40%),linear-gradient(#263149 2px,transparent 2px),linear-gradient(90deg,#263149 2px,transparent 2px),linear-gradient(180deg,#121f34 0 56%,#353849 56% 100%);}
+.game-world.room-computer .lab-window{background:#1b2351;border-color:#6277bb}.game-world.room-storage .lab-window{background:#283b2d;border-color:#7e9c65}.game-world.room-hall .lab-window{background:#18263b;border-color:#71809c}
+.game-world .lab-object{transform:scale(1.12);transform-origin:center}.game-world .object-label{font-size:12px;padding:5px 7px}.game-world .obj-art{min-width:52px;height:48px;font-size:28px}.game-world .obj-desk .obj-art{height:62px}
+@media(max-width:760px){.game-world{height:460px;min-height:460px}.game-world .lab-object{transform:scale(.9)}.game-world .object-label{font-size:9px}}
+.feedback{line-height:1.65;padding:13px 15px}.feedback.show{animation:feedbackIn .2s ease-out}@keyframes feedbackIn{from{opacity:.5;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+
+.final-score{margin:16px auto;padding:14px;border:2px solid var(--gold);background:#0b1725;color:#f5f4e8;font-size:1rem;line-height:1.8;text-align:left;max-width:500px}.final-score strong{color:#ffd166}.score-meter{height:12px;background:#26384a;margin-top:8px;border:1px solid #597087}.score-meter span{display:block;height:100%;background:linear-gradient(90deg,#65f0e2,#ffd166)}
+@media(max-width:600px){#assistantCompanion{left:7px;bottom:7px;max-width:calc(100vw - 14px)}.companion-avatar{width:45px;height:45px;flex-basis:45px;font-size:24px}.companion-copy{padding:7px 8px}.companion-copy span{font-size:.78rem}.cutscene-art{height:145px}}
+
+
+/* Investigation-first layout: full-width rooms, object-triggered questions, evidence notebook */
+.wrap{max-width:1540px}
+.grid{grid-template-columns:minmax(0,1fr)}
+.grid>.card:nth-child(2){display:none!important}
+.grid>.card:first-child{width:100%;padding:clamp(14px,2vw,28px)}
+.movebox{padding:clamp(12px,1.7vw,24px)}
+.game-world{height:clamp(620px,68vh,900px);min-height:620px;width:100%;max-width:none;margin:16px 0 12px;border-width:5px}
+.game-world .lab-object{transform:scale(1.22);transform-origin:center}
+.game-world .obj-art{min-width:66px;height:58px;font-size:34px}
+.game-world .object-label{font-size:14px;padding:6px 9px}
+@media(max-width:760px){.game-world{height:570px;min-height:570px}.game-world .lab-object{transform:scale(.95)}.game-world .object-label{font-size:10px}.game-world .obj-art{min-width:46px;height:44px;font-size:26px}}
+.clue-board{margin:18px 0;padding:18px;border:3px solid #55738a;background:linear-gradient(135deg,#0b1b2a,#14283a);box-shadow:6px 6px #050b14}
+.clue-board-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px dashed #38566d;padding-bottom:10px}
+.clue-board-head h2{margin:0;color:#ffd166;font:900 clamp(1rem,2vw,1.35rem)/1.4 "Trebuchet MS",Arial,sans-serif}
+#clueBoardCount{color:#65f0e2;font-weight:800;font-size:.95rem}
+.clue-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:10px;margin-top:12px}
+.clue-entry{padding:12px;border:1px solid #41627b;background:#091522;box-shadow:3px 3px #050b14}
+.clue-entry strong{display:block;color:#65f0e2;margin-bottom:6px;font-size:1rem}
+.clue-entry p{margin:0;color:#d5e6f2;font-size:.94rem;line-height:1.5}
+.clue-entry small{display:block;margin-top:7px;color:#ffd166;font-size:.76rem}
+.object-question-overlay{position:fixed;inset:0;z-index:230;display:none;align-items:center;justify-content:center;padding:18px;background:#030914dd;backdrop-filter:blur(4px)}
+.object-question-overlay.show{display:flex}
+.object-question-panel{width:min(760px,100%);max-height:min(88vh,900px);overflow:auto;padding:clamp(18px,3vw,30px);border:4px solid #65f0e2;background:linear-gradient(145deg,#132b40,#071421);box-shadow:0 0 0 6px #02070c,0 0 42px #65f0e244}
+.object-question-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.close-question{padding:5px 11px;font-size:1rem}
+.object-question-panel h2{font-size:clamp(1.2rem,2.8vw,1.8rem);line-height:1.35;color:#ffd166;margin:12px 0}
+#objectQuestionPrompt{font-size:clamp(1rem,2vw,1.2rem);line-height:1.6}
+#objectQuestionChoices .choice{font-size:1rem;line-height:1.45;padding:14px;text-align:left}
+#objectQuestionFeedback{font-size:1rem;line-height:1.6}
+.question-hint{font-size:.9rem}
+@media(max-width:600px){.clue-board{padding:12px}.game-world{height:520px;min-height:520px}.object-question-panel{padding:16px}}
+
+/* Distinctive room layouts: props are deliberately rearranged in every environment. */
+.game-world .lab-object{left:auto;right:auto;top:auto;bottom:auto;transform:translate(-50%,-50%) scale(1.08);transform-origin:center}
+.game-world .lab-object:hover,.game-world .lab-object:focus-visible{transform:translate(-50%,-54%) scale(1.14)}
+.game-world.room-computer .obj-art{background:linear-gradient(145deg,#243b78,#172342);border-color:#8ca7ff;color:#90f6ff;box-shadow:4px 4px #080d22,0 0 12px #647dff55}
+.game-world.room-computer .obj-desk .obj-art{background:repeating-linear-gradient(0deg,#4b3b6e 0 8px,#76609b 8px 13px);border-color:#c2a9ff;color:#f4d7ff}
+.game-world.room-storage .obj-art{background:linear-gradient(145deg,#294a3d,#152a24);border-color:#9abf86;color:#c9ff9b;box-shadow:4px 4px #07130e,0 0 12px #8ccf7250}
+.game-world.room-storage .obj-potion .obj-art{background:#1c4b45;border-color:#a7f1cb;color:#91ffe4}
+.game-world.room-hall .obj-art{background:linear-gradient(145deg,#3b465b,#20293a);border-color:#b1c2dc;color:#e1e9ff;box-shadow:4px 4px #070d18,0 0 12px #a5c2ff33}
+.game-world.room-hall .obj-notes .obj-art{background:#d6dced;color:#2d3a54;border-color:#9eacc7}
+.game-world .lab-object.answered-object{opacity:.42;filter:grayscale(.8)}
+.room-nav .room-btn:disabled{opacity:.36;filter:grayscale(1);cursor:not-allowed;border-style:dashed}
+.room-nav .room-btn:not(:disabled):not(.active){border-color:#54738c}
+.door-lock-message{position:absolute;right:12px;bottom:12px;z-index:9;padding:8px 10px;background:#281c2a;border:2px solid #ff6e91;color:#ffd6df;font:700 11px/1.4 Consolas,monospace;max-width:220px;box-shadow:3px 3px #07111f}
+@media(max-width:760px){.game-world .lab-object{transform:translate(-50%,-50%) scale(.87)}.game-world .lab-object:hover,.game-world .lab-object:focus-visible{transform:translate(-50%,-53%) scale(.92)}}
+
+
+/* Pixel props receive unique silhouettes and highlights, with room-specific material palettes. */
+.obj-computer .obj-art{clip-path:polygon(5% 0,95% 0,95% 76%,68% 76%,68% 100%,32% 100%,32% 82%,5% 82%);border-radius:2px}
+.obj-potion .obj-art{border-radius:10px 10px 4px 4px;clip-path:polygon(34% 0,66% 0,66% 18%,82% 29%,92% 95%,8% 95%,18% 29%,34% 18%);padding-top:12px}
+.obj-locker .obj-art{border-radius:3px 3px 0 0;box-shadow:inset 0 0 0 4px #07111f55,4px 4px #0b1726}
+.obj-microscope .obj-art{clip-path:polygon(30% 0,58% 0,58% 24%,78% 24%,78% 42%,62% 42%,62% 62%,88% 62%,88% 78%,18% 78%,18% 62%,42% 62%,42% 42%,25% 42%,25% 24%,30% 24%)}
+.obj-notes .obj-art{transform:rotate(-4deg);box-shadow:3px 4px #0b1726,inset 0 -6px #0001}
+.obj-desk .obj-art{position:relative;box-shadow:inset 0 7px #ffffff12,4px 4px #0b1726}
+
+
+/* Character polish: clearer pixel silhouettes, rim light and readable nameplates. */
+.player-sprite{filter:drop-shadow(3px 0 #0a1423) drop-shadow(-2px 0 #0a1423) drop-shadow(0 4px 0 #050a12) drop-shadow(0 0 7px #65f0e244)}
+.professor-npc .npc-sprite{filter:drop-shadow(3px 0 #0b1420) drop-shadow(-2px 0 #0b1420) drop-shadow(0 4px #050a12) drop-shadow(0 0 7px #ffd16633)}
+.professor-npc>b,.assistant-npc>b{box-shadow:2px 2px #050b14;border-radius:3px;letter-spacing:.03em}
+.assistant-npc span{display:grid;place-items:center;width:48px;height:44px;border:3px solid #65f0e2;border-radius:7px;background:linear-gradient(145deg,#28536b,#102337);box-shadow:inset 0 0 0 3px #102337,4px 4px #050b14,0 0 18px #65f0e244;font-size:29px}
+
+
+/* ROOM DECOR FIX: keep scenery balanced and labels inside the play area. */
+.game-world{position:relative;overflow:hidden;isolation:isolate;background-color:#173247}
+.game-world .world-label{left:12px;right:12px;top:10px;width:fit-content;max-width:calc(100% - 24px);box-sizing:border-box;white-space:normal;line-height:1.35;z-index:8}
+.game-world .lab-window{left:34%;top:9%;width:27%;height:27%;z-index:1}
+.game-world .shelf{right:5%;left:auto;top:13%;width:16%;height:27%;box-sizing:border-box;display:flex;justify-content:space-evenly;align-items:flex-start;gap:0;padding:7px 4px 0;overflow:visible;z-index:1}
+.game-world .shelf span{display:inline-block;flex:0 1 auto;font-size:clamp(12px,2.2vw,20px);line-height:1;white-space:nowrap}
+.game-world .shelf small{left:0;right:0;text-align:center;font-size:clamp(7px,1vw,9px);letter-spacing:.2px}
+.game-world .lab-object{z-index:4;max-width:30%;}
+.game-world .obj-desk{width:23%}
+.game-world .obj-potion{width:12%}
+.game-world .professor-npc{z-index:5}
+.game-world .assistant-npc{z-index:6;left:76%;top:48%;max-width:20%}
+.game-world .player{z-index:7}
+@media(max-width:760px){
+ .game-world .world-label{font-size:9px;letter-spacing:.5px;left:8px;right:8px;max-width:calc(100% - 16px)}
+ .game-world .lab-window{left:32%;top:10%;width:29%;height:25%}
+ .game-world .shelf{right:4%;top:15%;width:19%;height:24%;padding:6px 2px 0}
+ .game-world .shelf span{font-size:13px}
+ .game-world .assistant-npc{left:77%;top:49%;max-width:19%}
+ .game-world .lab-object{max-width:34%}
+}
+
+/* FINAL RESPONSIVE LAYOUT FIX: keep the room and decor inside the game frame */
+*,*::before,*::after{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+.wrap,.grid,.grid>.card,.grid>.card:first-child{min-width:0;max-width:100%}
+.game-world,#gameWorld{position:relative;width:100%;max-width:100%;min-width:0;box-sizing:border-box;overflow:hidden;isolation:isolate}
+.game-world .world-label{left:12px;right:12px;top:12px;width:max-content;max-width:calc(100% - 24px);white-space:normal;overflow-wrap:anywhere;line-height:1.35;z-index:8}
+.game-world .lab-window{left:36%;top:15%;width:27%;height:27%;max-width:27%;box-sizing:border-box}
+.game-world .shelf{left:auto;right:4%;top:15%;width:17%;height:28%;max-width:17%;box-sizing:border-box}
+.game-world .lab-object{box-sizing:border-box;max-width:28%;}
+.game-world .obj-desk{width:23%}
+.game-world .obj-potion{width:12%}
+.game-world .obj-locker{right:auto}
+.game-world .assistant-npc{left:76%;top:50%;max-width:18%;}
+.game-world .professor-npc{max-width:18%;}
+@media(max-width:760px){
+ .wrap{padding-left:10px;padding-right:10px}
+ .grid>.card:first-child{padding:10px}
+ .game-world,#gameWorld{height:460px;min-height:460px}
+ .game-world .world-label{left:8px;right:8px;top:8px;max-width:calc(100% - 16px);font-size:clamp(8px,2.1vw,11px);letter-spacing:.25px}
+ .game-world .lab-window{left:32%;top:16%;width:30%;height:25%;max-width:30%}
+ .game-world .shelf{left:auto;right:3%;top:17%;width:19%;height:24%;max-width:19%;padding-left:2px;padding-right:2px}
+ .game-world .shelf span{font-size:clamp(10px,2.8vw,15px)}
+ .game-world .lab-object{max-width:31%;transform:translate(-50%,-50%) scale(.82)}
+ .game-world .lab-object:hover,.game-world .lab-object:focus-visible{transform:translate(-50%,-53%) scale(.88)}
+ .game-world .assistant-npc{left:77%;top:52%;max-width:17%}
+ .game-world .professor-npc{left:31%;bottom:7%;max-width:17%}
+}
+@media(max-width:400px){
+ .game-world .lab-window{left:29%;width:32%;max-width:32%}
+ .game-world .shelf{right:2%;width:21%;max-width:21%}
+ .game-world .object-label{font-size:8px;white-space:normal;text-align:center;max-width:100px}
+}
+
+/* Responsive play area with a separate movement dock below the game frame. */
+.game-world{min-width:0;max-width:100%;height:clamp(360px,58vw,560px);touch-action:manipulation}
+.movement-dock{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:10px 0 14px;padding:10px 14px;border:1px solid #38566d;border-radius:10px;background:linear-gradient(135deg,#0b1b2b,#10283a);box-shadow:inset 0 0 0 1px #1c3448}
+.movement-dock-title{display:flex;flex-direction:column;gap:4px;color:#b8fff2;font:700 12px ui-monospace,monospace}
+.movement-dock-title span{color:#9bb2c4;font:normal 11px system-ui,sans-serif}
+.movement-dock .pad{margin:0 0 0 auto;grid-template-columns:repeat(3,46px);gap:5px;padding:6px;border:1px solid #49677e;background:#071421;border-radius:10px}
+.movement-dock .pad button{min-height:40px;font-size:1.05rem;padding:4px 0;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+@media(max-width:760px){.wrap{padding-left:10px;padding-right:10px}.game-world{height:clamp(390px,68vw,500px)}.movement-dock{padding:8px 10px;gap:8px}.movement-dock-title{max-width:52%}.movement-dock-title span{line-height:1.3}.movement-dock .pad{grid-template-columns:repeat(3,40px);gap:4px;padding:5px}.movement-dock .pad button{min-height:38px}.world-label{font-size:9px}}
+@media(orientation:landscape) and (max-height:600px){header{padding:12px 12px 8px}.wrap{margin:10px auto;padding-bottom:18px}.game-world{height:58vh;min-height:300px;max-height:430px}.movebox{padding:8px}.movement-dock{padding:6px 10px;margin:7px 0 10px}.movement-dock .pad{grid-template-columns:repeat(3,36px);gap:3px;padding:4px}.movement-dock .pad button{min-height:32px;font-size:1rem}.world-label{font-size:9px}.portrait{height:75px}.pixel-sprite{max-height:76px}}
+@media(min-width:1000px){.game-world{height:560px}.movement-dock .pad{grid-template-columns:repeat(3,46px)}}
+@media(hover:none){button:hover{transform:none}}
+
+</style>
+</head>
+<body>
+<div id="alarmOverlay"></div>
+<div id="openingCutscene" class="cutscene show" role="dialog" aria-modal="true" aria-labelledby="cutsceneTitle">
+ <div class="cutscene-frame">
+  <div class="cutscene-kicker">PIXEL LAB • HỒ SƠ 03</div>
+  <div class="cutscene-art" aria-hidden="true"><div class="cutscene-moon">☾</div><div class="cutscene-window"></div><div class="cutscene-shelf">▥ ▥ ▥</div><div class="cutscene-table"></div><div class="cutscene-bottle">⚗</div><div class="cutscene-person">▟█▙<br>▜█▛</div><div class="cutscene-scan"></div></div>
+  <h2 id="cutsceneTitle">VỤ ÁN MẤT TÍCH Ở PHÒNG THÍ NGHIỆM</h2>
+  <p>21:14 — Một tiếng động vang lên trong phòng thí nghiệm số 03. Lọ thuốc Chất X biến mất, dữ liệu nhiệt độ bị thay đổi và hệ thống tự hủy bắt đầu đếm ngược.</p>
+  <p>Giáo sư Mol hoảng hốt cầu cứu. Trợ lý Equilibrium đã phát hiện dấu vết bất thường. Bạn là thám tử duy nhất có thể lần theo manh mối, giải mã hệ thống và tìm ra kẻ trộm trước khi mọi thứ nổ tung.</p>
+  <button class="primary" onclick="dismissCutscene()">▶ BẮT ĐẦU NHIỆM VỤ</button>
+ </div>
+</div>
+<div id="assistantCompanion" aria-live="polite"><div class="companion-avatar" aria-hidden="true">🤖</div><div class="companion-copy"><b>EQUILIBRIUM • TRỢ LÝ</b><span id="companionMessage">Xin chào, thám tử! Mình sẽ đồng hành cùng bạn. Cứ bình tĩnh nhé!</span></div></div>
+<div id="threatOverlay" role="alertdialog" aria-modal="true" aria-labelledby="threatTitle"><div class="alert-window"><h2 id="threatTitle">⚠ TIN NHẮN TỪ KẺ TRỘM ⚠</h2><p id="threatMessage">Các người sẽ không bao giờ tìm được Chất X!</p><p style="color:#ff9bb0">HỆ THỐNG PHONG TỎA ĐANG TĂNG CẤP...</p><button class="primary" onclick="dismissThreat()">Tiếp tục điều tra</button></div></div>
+<div id="endOverlay" role="alertdialog" aria-modal="true"><div class="end-panel" id="endPanel"><h2 id="endTitle">CẢNH BÁO</h2><p id="endMessage"></p><div id="finalScoreEnd" class="final-score"></div><button class="primary" id="endButton" onclick="restart()">Chơi lại</button></div></div>
+<div id="objectQuestionOverlay" class="object-question-overlay" role="dialog" aria-modal="true" aria-labelledby="objectQuestionTitle">
+ <div class="object-question-panel">
+  <div class="object-question-top"><span class="tag">PHÂN TÍCH VẬT CHỨNG</span><button class="secondary close-question" onclick="closeObjectQuestion()" aria-label="Đóng câu hỏi">✕</button></div>
+  <h2 id="objectQuestionTitle">Câu đố từ vật chứng</h2>
+  <p id="objectQuestionPrompt"></p>
+  <div id="objectQuestionChoices"></div>
+  <div id="objectQuestionFeedback" class="feedback" aria-live="polite"></div>
+  <p class="question-hint muted" id="objectQuestionHint">Trả lời để ghi nhận kết quả phân tích. Manh mối vẫn được lưu trong hồ sơ.</p>
+  <button class="primary" id="objectQuestionContinue" style="display:none" onclick="closeObjectQuestion()">Tiếp tục khám phá →</button>
+ </div>
+</div>
+<header>
+ <div class="eyebrow">Hồ sơ tuyệt mật • Phòng thí nghiệm số 03</div>
+ <h1>🧪 VỤ ÁN MẤT TÍCH<br>Ở PHÒNG THÍ NGHIỆM</h1>
+ <p>Giải mã hằng số cân bằng • Thu thập manh mối • Tìm ra kẻ phá hoại trước khi hệ thống khóa vĩnh viễn.</p>
+ <div class="soundbar">
+  <button class="secondary" id="musicBtn" onclick="toggleMusic()">🎵 Bật nhạc nền</button>
+  <button class="secondary" id="sfxBtn" onclick="toggleSfx()">🔊 Âm thanh: bật</button>
+ </div>
+</header>
+<main class="wrap">
+ <section class="status">
+  <div class="stat"><small>Hồ sơ điều tra</small><strong id="levelLabel">Chưa bắt đầu</strong><div class="progress"><span id="progress"></span></div></div>
+  <div class="stat"><small>Manh mối thu thập</small><strong id="clueCount">0 / 4</strong></div>
+  <div class="stat"><small>Thời gian hệ thống</small><strong id="timer">07:00</strong></div>
+ </section>
+ <div class="grid">
+  <section class="card">
+   <span class="tag">BÁO CÁO HIỆN TRƯỜNG</span>
+   <h2 id="sceneTitle">Lời nhắn của Giáo sư Mol</h2>
+   <p class="story" id="sceneText">Một lọ dung dịch chỉ thị màu tối thượng – Chất X – đã biến mất. Khóa cân bằng đang kích hoạt chế độ phong tỏa. Giáo sư Mol cần bạn kiểm tra các dấu vết, thẩm vấn nghi phạm và khôi phục hệ thống.</p>
+   <div class="terminal" id="terminal">[SYSTEM] Trợ lý Equilibrium đang khởi động…<br>[SYSTEM] Chờ xác nhận từ thám tử.</div>
+   <div class="signal" id="signal"><i></i><span id="signalText">Tín hiệu ổn định</span></div>
+   <h2 style="margin-top:18px">Đội điều tra • Pixel Lab</h2>
+   <div class="cast pixel-cast" aria-label="Nhân vật pixel art trong trò chơi">
+    <div class="actor" id="profActor">
+     <div class="portrait"><svg class="pixel-sprite" viewBox="0 0 64 80" role="img" aria-label="Giáo sư Mol pixel art" shape-rendering="crispEdges">
+      <rect x="20" y="4" width="24" height="8" fill="#6b432c"/><rect x="12" y="12" width="40" height="20" fill="#f2c7a5"/><rect x="8" y="16" width="8" height="12" fill="#f2c7a5"/><rect x="48" y="16" width="8" height="12" fill="#f2c7a5"/><rect x="16" y="12" width="32" height="8" fill="#6b432c"/><rect x="20" y="22" width="6" height="5" fill="#17263b"/><rect x="38" y="22" width="6" height="5" fill="#17263b"/><rect x="27" y="30" width="10" height="3" fill="#9c4f50"/><rect x="12" y="36" width="40" height="24" fill="#eaf4ff"/><rect x="24" y="36" width="16" height="22" fill="#55a9bd"/><rect x="28" y="36" width="8" height="20" fill="#f3d35c"/><rect x="8" y="40" width="8" height="24" fill="#eaf4ff"/><rect x="48" y="40" width="8" height="24" fill="#eaf4ff"/><rect x="16" y="60" width="14" height="12" fill="#243b58"/><rect x="34" y="60" width="14" height="12" fill="#243b58"/><rect x="12" y="72" width="18" height="5" fill="#152238"/><rect x="34" y="72" width="18" height="5" fill="#152238"/></svg></div>
+     <strong>Giáo sư Mol</strong><small>Chỉ đạo điều tra</small>
+    </div>
+    <div class="actor active" id="assistActor">
+     <div class="portrait"><svg class="pixel-sprite" viewBox="0 0 64 80" role="img" aria-label="Trợ lý Equilibrium pixel art" shape-rendering="crispEdges">
+      <rect x="12" y="8" width="40" height="32" fill="#4b7e9e"/><rect x="18" y="14" width="28" height="20" fill="#a9fff2"/><rect x="22" y="20" width="6" height="6" fill="#17344a"/><rect x="36" y="20" width="6" height="6" fill="#17344a"/><rect x="27" y="29" width="10" height="3" fill="#2b6d78"/><rect x="20" y="40" width="24" height="8" fill="#65f0e2"/><rect x="8" y="48" width="48" height="16" fill="#397c9d"/><rect x="16" y="52" width="8" height="5" fill="#a9fff2"/><rect x="40" y="52" width="8" height="5" fill="#a9fff2"/><rect x="16" y="64" width="12" height="8" fill="#28465d"/><rect x="36" y="64" width="12" height="8" fill="#28465d"/><rect x="12" y="72" width="16" height="5" fill="#17283c"/><rect x="36" y="72" width="16" height="5" fill="#17283c"/></svg></div>
+     <strong>Equilibrium</strong><small>Trợ lý phân tích</small>
+    </div>
+    <div class="actor" id="detActor">
+     <div class="portrait"><svg class="pixel-sprite" viewBox="0 0 64 80" role="img" aria-label="Thám tử pixel art" shape-rendering="crispEdges">
+      <rect x="10" y="10" width="44" height="8" fill="#243b58"/><rect x="16" y="4" width="32" height="10" fill="#243b58"/><rect x="16" y="18" width="32" height="20" fill="#e9b995"/><rect x="10" y="22" width="8" height="12" fill="#e9b995"/><rect x="46" y="22" width="8" height="12" fill="#e9b995"/><rect x="20" y="24" width="7" height="5" fill="#15243b"/><rect x="37" y="24" width="7" height="5" fill="#15243b"/><rect x="27" y="32" width="10" height="3" fill="#9d5651"/><rect x="12" y="38" width="40" height="24" fill="#3b5d83"/><rect x="25" y="38" width="14" height="24" fill="#f0c65c"/><rect x="6" y="42" width="8" height="20" fill="#3b5d83"/><rect x="50" y="42" width="8" height="20" fill="#3b5d83"/><rect x="14" y="62" width="14" height="11" fill="#25344b"/><rect x="36" y="62" width="14" height="11" fill="#25344b"/><rect x="10" y="72" width="20" height="5" fill="#121e30"/><rect x="34" y="72" width="20" height="5" fill="#121e30"/></svg></div>
+     <strong>Thám tử</strong><small>Nhân vật của bạn</small>
+    </div>
+   </div>
+   <div class="movebox">
+    <div class="movehead"><strong>🕹️ Phòng thí nghiệm — di chuyển thám tử</strong><span id="coords">X: 1 • Y: 1</span></div>
+    <p class="muted" style="margin:6px 0">Dùng WASD, phím mũi tên hoặc nút điều khiển. Nhân vật di chuyển trong phòng.</p>
+    <div class="game-world" id="gameWorld" tabindex="0" aria-label="Khu vực di chuyển nhân vật thám tử">
+     <div class="lab-window"><span>☾</span><i></i><i></i><i></i><b>LAB 03</b></div>
+     <div class="shelf"><span>▥</span><span>▥</span><span>▥</span><span>▥</span><small>KỆ HÓA CHẤT</small></div>
+     <div class="world-label">LAB 03 • PHÒNG THÍ NGHIỆM BÍ MẬT</div>
+     <button class="lab-object obj-desk" onclick="inspectObject('desk')" aria-label="Tương tác bàn thí nghiệm"><span class="obj-art">▤</span><span class="object-label">Bàn thí nghiệm</span></button>
+     <button class="lab-object obj-potion" onclick="inspectObject('potion')" aria-label="Tương tác giá đựng lọ thuốc"><span class="obj-art">⚗</span><span class="object-label">Giá lọ thuốc</span><span class="sparkle">✦</span></button>
+     <button class="lab-object obj-computer" onclick="inspectObject('computer')" aria-label="Tương tác máy tính"><span class="obj-art">▣</span><span class="object-label">Máy tính</span></button>
+     <button class="lab-object obj-notes" onclick="inspectObject('notes')" aria-label="Tương tác sổ ghi chép"><span class="obj-art">▤</span><span class="object-label">Sổ ghi chép</span></button>
+     <button class="lab-object obj-locker" onclick="inspectObject('locker')" aria-label="Tương tác tủ mẫu"><span class="obj-art">▥</span><span class="object-label">Tủ lưu mẫu</span></button>
+     <button class="lab-object obj-microscope" onclick="inspectObject('microscope')" aria-label="Tương tác kính hiển vi"><span class="obj-art">⚙</span><span class="object-label">Kính hiển vi</span></button>
+     <div class="professor-npc" id="professorNpc" title="Giáo sư Mol đang lo lắng"><div class="npc-bubble">Lọ thuốc của tôi đâu rồi?!</div><svg viewBox="0 0 64 80" class="npc-sprite pixel-sprite" shape-rendering="crispEdges" aria-label="Giáo sư Mol lo lắng"><rect x="20" y="4" width="24" height="8" fill="#6b432c"/><rect x="12" y="12" width="40" height="20" fill="#f2c7a5"/><rect x="16" y="12" width="32" height="8" fill="#6b432c"/><rect x="20" y="22" width="6" height="5" fill="#17263b"/><rect x="38" y="22" width="6" height="5" fill="#17263b"/><rect x="27" y="30" width="10" height="3" fill="#9c4f50"/><rect x="12" y="36" width="40" height="24" fill="#eaf4ff"/><rect x="24" y="36" width="16" height="22" fill="#55a9bd"/><rect x="28" y="36" width="8" height="20" fill="#f3d35c"/><rect x="8" y="40" width="8" height="24" fill="#eaf4ff"/><rect x="48" y="40" width="8" height="24" fill="#eaf4ff"/><rect x="16" y="60" width="14" height="12" fill="#243b58"/><rect x="34" y="60" width="14" height="12" fill="#243b58"/><rect x="12" y="72" width="18" height="5" fill="#152238"/><rect x="34" y="72" width="18" height="5" fill="#152238"/></svg><b>Giáo sư Mol</b></div>
+     <div class="assistant-npc" id="assistantNpc" title="Equilibrium đang quét phòng"><span>🤖</span><b>Equilibrium</b></div>
+     <div class="player" id="player" aria-label="Thám tử người chơi">
+      <svg class="player-sprite pixel-sprite" id="detective" viewBox="0 0 64 80" role="img" aria-label="Thám tử pixel art đang đứng" shape-rendering="crispEdges">
+       <rect x="10" y="10" width="44" height="8" fill="#243b58"/><rect x="16" y="4" width="32" height="10" fill="#243b58"/><rect x="16" y="18" width="32" height="20" fill="#e9b995"/><rect x="10" y="22" width="8" height="12" fill="#e9b995"/><rect x="46" y="22" width="8" height="12" fill="#e9b995"/><rect x="20" y="24" width="7" height="5" fill="#15243b"/><rect x="37" y="24" width="7" height="5" fill="#15243b"/><rect x="27" y="32" width="10" height="3" fill="#9d5651"/><rect x="12" y="38" width="40" height="24" fill="#3b5d83"/><rect x="25" y="38" width="14" height="24" fill="#f0c65c"/><rect x="6" y="42" width="8" height="20" fill="#3b5d83"/><rect x="50" y="42" width="8" height="20" fill="#3b5d83"/><rect x="14" y="62" width="14" height="11" fill="#25344b"/><rect x="36" y="62" width="14" height="11" fill="#25344b"/><rect x="10" y="72" width="20" height="5" fill="#121e30"/><rect x="34" y="72" width="20" height="5" fill="#121e30"/>
+      </svg>
+      <span class="player-shadow"></span>
+     </div>
+    </div>
+    <div class="movement-dock" aria-label="Bảng điều khiển di chuyển">
+     <div class="movement-dock-title"><strong>🕹️ BỘ NÚT DI CHUYỂN</strong><span>WASD / phím mũi tên cũng dùng được</span></div>
+     <div class="pad" aria-label="Nút di chuyển">
+      <button type="button" onclick="moveDetective(0,-1)" aria-label="Đi lên">▲</button>
+      <button type="button" onclick="moveDetective(-1,0)" aria-label="Đi trái">◀</button>
+      <button type="button" onclick="moveDetective(0,1)" aria-label="Đi xuống">▼</button>
+      <button type="button" onclick="moveDetective(1,0)" aria-label="Đi phải">▶</button>
+     </div>
+    </div>
+    <div class="room-nav" aria-label="Chọn phòng để khám phá"><strong>🗺️ KHU VỰC KHÁM PHÁ</strong><button type="button" class="secondary room-btn active" onclick="changeRoom(0)">Phòng thí nghiệm</button><button type="button" class="secondary room-btn" onclick="changeRoom(1)">Phòng máy</button><button type="button" class="secondary room-btn" onclick="changeRoom(2)">Kho lưu mẫu</button><button type="button" class="secondary room-btn" onclick="changeRoom(3)">Hành lang</button><span id="roomHint">Di chuyển tới cửa hoặc chọn phòng để khám phá.</span><span id="roomProgress" class="room-progress">Tiến độ phòng: 0 / 6 vật dụng đã giải mã</span></div>
+    <div class="object-info" id="objectInfo" aria-live="polite"><strong>📡 Bảng quan sát</strong><span>Di chuyển thám tử và nhấn vào đồ vật trong phòng để kiểm tra manh mối.</span></div>
+    <section class="clue-board" id="clueBoard" aria-live="polite">
+      <div class="clue-board-head"><h2>🗂️ BẢNG MANH MỐI ĐÃ THU THẬP</h2><span id="clueBoardCount">0 manh mối</span></div>
+      <p class="muted" id="clueBoardEmpty">Chưa có manh mối nào. Hãy đi quanh phòng và tương tác với đồ vật để tìm bằng chứng.</p>
+      <div id="clueList" class="clue-list"></div>
+    </section>
+    <div id="moveStatus" class="muted" style="text-align:center;font-size:.9rem;margin:8px 0">Sẵn sàng di chuyển</div>
+   </div>
+   <div id="startArea"><button class="primary" onclick="startGame()">Bắt đầu điều tra →</button></div>
+   <div class="badge" id="badge"><div class="medal">🏅</div><h2>THÁM TỬ HÓA HỌC XUẤT SẮC</h2><p>Vụ án đã được phá! Bạn đã vận dụng kiến thức cân bằng hóa học để giải mã toàn bộ manh mối.</p><div id="finalScoreBadge" class="final-score"></div><button class="primary" onclick="restart()">Chơi lại</button></div>
+  </section>
+  <section class="card">
+   <span class="tag" id="stageTag">HƯỚNG DẪN</span>
+   <div class="stage active" id="intro">
+    <h2>Nhiệm vụ của bạn</h2>
+    <p>Hoàn thành 4 màn điều tra, vượt qua 20 câu hỏi và chọn đúng hung thủ trong hồ sơ cuối cùng. Nếu hết giờ mà chưa mở khóa hệ thống, toàn bộ phòng thí nghiệm sẽ phát nổ!</p>
+    <ul class="muted"><li>Màn 1: Tính hằng số cân bằng K<sub>c</sub>.</li><li>Màn 2: Áp dụng nguyên lý Le Chatelier.</li><li>Màn 3: Giải mã két sắt bằng bảng ICE.</li><li>Màn 4: Trả lời 20 câu hỏi khác nhau trong thời gian giới hạn.</li><li>Hồ sơ cuối: chọn hung thủ dựa trên các manh mối thu thập được.</li></ul>
+    <p class="muted">Trả lời sai sẽ nhận được giải thích để học từ manh mối. Đồng hồ là thời gian mô phỏng trong game. Trong lúc điều tra, kẻ trộm có thể gửi lời đe dọa bất ngờ.</p>
+   </div>
+   <div class="stage" id="stage1">
+    <h2>Màn 1 — Dấu vết nồng độ</h2>
+    <p>Ở nhiệt độ không đổi, hệ phản ứng đang cân bằng:</p>
+    <div class="terminal">H₂(g) + I₂(g) ⇌ 2HI(g)<br>[H₂] = 0,2 M • [I₂] = 0,2 M • [HI] = 0,8 M</div>
+    <p>Công thức: K<sub>c</sub> = [HI]² / ([H₂][I₂]). Giá trị K<sub>c</sub> là bao nhiêu?</p>
+    <button class="choice" onclick="answer(1,0)">A. 4</button><button class="choice" onclick="answer(1,1)">B. 16</button><button class="choice" onclick="answer(1,2)">C. 0,16</button><button class="choice" onclick="answer(1,3)">D. 8</button>
+    <div class="feedback" id="fb1"></div>
+   </div>
+   <div class="stage" id="stage2">
+    <h2>Màn 2 — Lời khai của nghi phạm</h2>
+    <p>Phản ứng thuận là <b>tỏa nhiệt</b>: A + B ⇌ C + nhiệt. Nếu tăng nhiệt độ, cân bằng chuyển dịch theo chiều nào?</p>
+    <div class="suspects"><div class="suspect"><b>Ống nghiệm A</b>Nhiệt độ</div><div class="suspect"><b>Ống nghiệm B</b>Nồng độ</div><div class="suspect"><b>Ống nghiệm C</b>Áp suất</div></div>
+    <button class="choice" onclick="answer(2,0)">→ Chiều thuận (tạo thêm C)</button><button class="choice" onclick="answer(2,1)">← Chiều nghịch (tạo A và B)</button><button class="choice" onclick="answer(2,2)">Không dịch chuyển</button>
+    <div class="feedback" id="fb2"></div>
+   </div>
+   <div class="stage" id="stage3">
+    <h2>Màn 3 — Mật mã két sắt</h2>
+    <p>Trong bình 1 L, ban đầu có 1 mol A. Phản ứng A(g) ⇌ B(g) đạt cân bằng, còn 0,6 mol A. Biết K<sub>c</sub> = [B]/[A] và ban đầu chưa có B.</p>
+    <p><b>Gợi ý:</b> A đã phản ứng 1 − 0,6 = 0,4 mol, nên tại cân bằng [B] = 0,4 M.</p>
+    <p>Tính K<sub>c</sub>, sau đó nhập mã 4 chữ số theo dạng <b>0,666… → 0667</b> (làm tròn 3 chữ số thập phân, bỏ dấu phẩy).</p>
+    <div class="terminal">Kc = 0,4 / 0,6 ≈ 0,667</div>
+    <label for="code">Mã két sắt</label><input id="code" inputmode="numeric" maxlength="4" placeholder="Nhập 4 chữ số">
+    <button class="primary" onclick="checkCode()">Mở két sắt</button>
+    <div class="feedback" id="fb3"></div>
+   </div>
+   <div class="stage" id="stage4">
+    <h2>Màn 4 — Thử thách cuối</h2>
+    <p>Hệ thống đưa ra 20 câu hỏi khác nhau. Mỗi câu đúng giúp khôi phục quyền điều khiển và cộng điểm; trả lời sai sẽ hiện giải thích và trợ lý sẽ động viên bạn.</p>
+    <div class="terminal" id="bossProgress">Câu 1 / 20</div>
+    <div id="bossQuestion"></div><div id="bossChoices"></div>
+    <div class="feedback" id="fb4"></div>
+    <div class="case-file" id="caseFile"><h3>📁 HỒ SƠ TUYỆT MẬT: CHỌN HUNG THỦ</h3><p>Đối chiếu động cơ, thời điểm xảy ra sự cố và dấu vết hóa học. Ai đã lợi dụng nhiệt độ để gây nhiễu hệ cân bằng và lấy Chất X?</p><div id="suspectChoices"></div><div class="feedback" id="caseFeedback"></div><button class="primary" onclick="submitAccusation()">🔎 Chốt danh tính hung thủ</button></div>
+   </div>
+  </section>
+ </div>
+</main>
+<div id="completionNotice" class="completion-notice" hidden role="dialog" aria-modal="true"><div class="completion-card"><div style="font-size:2.6rem">🔐</div><h2 id="completionNoticeTitle">KHU VỰC ĐÃ ĐƯỢC GIẢI MÃ</h2><p id="completionNoticeText">Bạn đã giải mã xong căn phòng.</p><button class="primary" onclick="dismissCompletionNotice()">Tiếp tục điều tra →</button></div></div>
+<footer>Trò chơi học tập mô phỏng • Hóa học 11 • Không cần cài đặt — chỉ cần mở file index.html</footer>
+<script>
+let current=0, clues=0, seconds=420, interval=null, bossIndex=0, bossRight=0, answered={}, threatTimer=null, gameEnded=false, selectedSuspect="";
+let audioCtx=null, masterGain=null, musicTimer=null, musicOn=false, sfxOn=true, musicStep=0;
+let playerX=50, playerY=58, moveTimeout=null, dx=0, dy=0;
+let score=0, wrongAnswers=0, roomsVisited=new Set([0]), currentRoom=0, tickingOn=false;
+let foundClueKeys=new Set(), objectQuestionIndex=0, objectQuestionLocked=false, activeQuestionTimer=null;
+let answeredObjects=new Set(), completedRooms=new Set(), activeObjectId=null, activeQuestionIndex=-1, completionNoticeTimer=null;
+let consecutiveObjectWrong=0;
+document.addEventListener('DOMContentLoaded',()=>{const cf=document.getElementById('caseFile'),board=document.getElementById('clueBoard');if(cf&&board)board.appendChild(cf);updateRoomLocks();changeRoom(0);});
+function dismissCutscene(){document.getElementById('openingCutscene').classList.remove('show');startGame();}
+function assistantSays(message){const el=document.getElementById('companionMessage');if(el)el.textContent=message;const a=document.getElementById('assistantCompanion');if(a){a.classList.remove('companion-pulse');void a.offsetWidth;a.classList.add('companion-pulse')}speakActor('assistActor');}
+function scoreChange(n){score=Math.max(0,score+n);}
+function showFinalScore(){const accuracy= boss.length ? Math.round(bossRight/boss.length*100):0;const total=Math.min(1000,Math.max(0,score));const html='<strong>ĐIỂM TỔNG KẾT: '+total+'/1000</strong><br>Trả lời đúng: '+(bossRight)+'/'+boss.length+' câu ('+accuracy+'%)<br>Phòng đã khám phá: '+roomsVisited.size+'/4<br>Lỗi trả lời: '+wrongAnswers+'<div class="score-meter"><span style="width:'+Math.min(100,total/10)+'%"></span></div><small>'+ (total>=800?'Hạng S — Thám tử huyền thoại':total>=600?'Hạng A — Điều tra viên xuất sắc':total>=350?'Hạng B — Thám tử triển vọng':'Hạng C — Cần luyện tập thêm')+'</small>';document.getElementById('finalScoreBadge').innerHTML=html;document.getElementById('finalScoreEnd').innerHTML=html;}
+const roomData=[
+ {name:'Phòng thí nghiệm',label:'LAB 03 • PHÒNG THÍ NGHIỆM BÍ MẬT',hint:'Nơi Chất X biến mất. Trò chuyện với giáo sư và kiểm tra dụng cụ.',cls:'',objects:[['desk','▤','Bàn pha chế','obj-desk'],['potion','⚗','Giá lọ thuốc','obj-potion'],['computer','▣','Máy phân tích','obj-computer'],['notes','▧','Sổ công thức','obj-notes'],['locker','▥','Tủ hóa chất','obj-locker'],['microscope','⚙','Kính hiển vi','obj-microscope']]},
+ {name:'Phòng máy',label:'SERVER ROOM • TRUNG TÂM DỮ LIỆU',hint:'Đối chiếu nhật ký đăng nhập, dây cáp và lệnh điều chỉnh nhiệt độ.',cls:'room-computer',objects:[['computer','▣','Máy chủ','obj-computer'],['notes','▤','Nhật ký truy cập','obj-notes'],['locker','▥','Tủ nguồn','obj-locker'],['microscope','⌁','Bảng mạch','obj-microscope'],['desk','▤','Bàn kỹ thuật','obj-desk'],['potion','◉','Ổ lưu trữ','obj-potion']]},
+ {name:'Kho lưu mẫu',label:'ARCHIVE • KHO LƯU MẪU LẠNH',hint:'Tìm dấu cặn hóa chất, dấu giày và mẫu bị tráo trên các kệ lưu trữ.',cls:'room-storage',objects:[['locker','▥','Tủ mẫu A-17','obj-locker'],['potion','⚗','Ống nghiệm','obj-potion'],['microscope','⚙','Kính phân tích','obj-microscope'],['notes','▤','Phiếu kiểm kê','obj-notes'],['desk','▤','Xe đẩy mẫu','obj-desk'],['computer','▣','Máy quét mã','obj-computer']]},
+ {name:'Hành lang',label:'SECURITY CORRIDOR • HÀNH LANG BẢO MẬT',hint:'Kiểm tra camera, thẻ ra vào và dấu chân dẫn về phòng máy.',cls:'room-hall',objects:[['computer','▣','Màn hình camera','obj-computer'],['notes','▤','Bản ghi bảo vệ','obj-notes'],['locker','▥','Tủ thẻ từ','obj-locker'],['microscope','⌁','Bộ cảm biến','obj-microscope'],['desk','▤','Bàn trực','obj-desk'],['potion','◉','Dấu phát quang','obj-potion']]}
+];
+const roomClues={
+  0:{desk:['🧪 Bàn pha chế','Trên bàn có vòng ẩm và vài giọt dung dịch phát sáng. Giáo sư Mol xác nhận đây là nơi đặt Chất X lần cuối.'],potion:['🧴 Giá lọ thuốc','Bụi để lại hình trụ rỗng; một vệt xanh hướng về máy phân tích.'],computer:['💻 Máy phân tích','Màn hình ghi nhiệt độ tăng bất thường lúc 21:14.'],notes:['📓 Sổ công thức','Dòng bị gạch chân: “Không thay đổi nhiệt độ khi chưa ghi lại Kc”.'],locker:['🗄️ Tủ hóa chất','Tay nắm có vết xước mới, như thể ai đó mở tủ vội vàng.'],microscope:['🔬 Kính hiển vi','Tinh thể xanh dưới kính giống cặn còn lại ở vị trí bình thuốc.']},
+  1:{computer:['🖥️ Máy chủ','Nhật ký ghi nhận tài khoản không xác định lúc 21:14. Lệnh điều chỉnh nhiệt độ được gửi ngay trước khi Chất X biến mất.'],notes:['📋 Nhật ký truy cập','Có một phiên đăng nhập bị xóa nhưng thời gian vẫn còn trong bộ nhớ đệm.'],locker:['🔌 Tủ nguồn','Một dây cảm biến nhiệt bị tháo rồi cắm lại không đúng vị trí.'],microscope:['🧩 Bảng mạch','Bụi trên bảng mạch bị lau sạch quanh cổng điều khiển nhiệt độ.'],desk:['🛠️ Bàn kỹ thuật','Trên bàn còn đầu vít và găng tay chống tĩnh điện.'],potion:['💽 Ổ lưu trữ','Tệp nhật ký cho thấy dữ liệu nhiệt độ bị sửa thủ công.']},
+  2:{locker:['🧊 Tủ mẫu A-17','Ô A-17 trống, nhưng hệ thống ghi nhận cửa tủ mở lúc 21:16.'],potion:['🧪 Ống nghiệm','Mẫu xanh có thành phần tương tự cặn Chất X, nhưng đã bị pha loãng.'],microscope:['🔬 Kính phân tích','Tinh thể còn sót cho thấy mẫu từng tiếp xúc với nhiệt độ cao bất thường.'],notes:['📑 Phiếu kiểm kê','Một dòng kiểm kê bị sửa bằng mực khác: Chất X chuyển khỏi vị trí lúc 21:16.'],desk:['🛒 Xe đẩy mẫu','Bánh xe để lại vệt bụi kéo từ tủ A-17 về cửa hành lang.'],computer:['📟 Máy quét mã','Thẻ dùng mở tủ không thuộc ca trực của giáo sư Mol.']},
+  3:{computer:['📹 Màn hình camera','Camera bị ngắt 47 giây ngay trước 21:14; một bóng người đi về phía phòng máy.'],notes:['📓 Bản ghi bảo vệ','Bảo vệ ghi nhận tiếng bước chân vội và tiếng cửa phòng máy đóng mạnh.'],locker:['🪪 Tủ thẻ từ','Một thẻ khách được sử dụng ngoài khung giờ cho phép.'],microscope:['📡 Bộ cảm biến','Cảm biến chuyển động ghi nhận người đi từ hành lang vào phòng máy.'],desk:['🛡️ Bàn trực','Danh sách trực không có tên người đã dùng thẻ khách.'],potion:['✨ Dấu phát quang','Một vệt xanh nhạt dẫn về phía phòng máy, trùng với cặn ở phòng thí nghiệm.']}
+};
+function isRoomUnlocked(index){return index===0||roomsVisited.has(index)||completedRooms.has(index-1);}
+function updateRoomLocks(){document.querySelectorAll('.room-btn').forEach((b,i)=>{b.disabled=!isRoomUnlocked(i);b.title=b.disabled?'🔒 Hoàn thành '+roomData[i-1].name+' để mở khóa phòng này':'Mở '+roomData[i].name;});}
+function changeRoom(index){
+ if(index<0||index>=roomData.length)return;
+ if(!isRoomUnlocked(index)){assistantSays('Khu vực này đang bị khóa! Hãy giải mã tất cả vật dụng trong '+roomData[index-1].name+' trước nhé.');document.getElementById('moveStatus').textContent='🔒 Phòng bị khóa — hoàn thành phòng hiện tại trước';tone(180,.16,'square',.05);return;}
+ closeObjectQuestion();
+ const firstVisit=!roomsVisited.has(index);currentRoom=index;roomsVisited.add(index);
+ if(firstVisit&&index!==0){scoreChange(25);assistantSays('Tốt lắm! Mình đã dẫn bạn tới một khu vực mới. Hãy kiểm tra từng món đồ để tìm manh mối!');}
+ const world=document.getElementById('gameWorld');world.classList.remove('room-computer','room-storage','room-hall');if(roomData[index].cls)world.classList.add(roomData[index].cls);
+ world.querySelector('.world-label').textContent=roomData[index].label;document.getElementById('roomHint').textContent=roomData[index].hint;
+ document.querySelectorAll('.room-btn').forEach((b,i)=>b.classList.toggle('active',i===index));
+ const buttons=[...world.querySelectorAll('.lab-object')];
+ const roomLayouts=[
+  // LAB 03: keep the window and shelf clear; arrange objects around the room edges
+  // so the central walking area and both characters remain unobstructed.
+  {desk:[17,73],potion:[68,76],computer:[67,46],notes:[18,47],locker:[84,73],microscope:[39,47]},
+  // SERVER ROOM: computers stay near the upper-left, with equipment along the sides.
+  {computer:[20,44],notes:[20,72],locker:[82,44],microscope:[67,72],desk:[43,78],potion:[83,75]},
+  // ARCHIVE: use the outer lanes between the storage racks; leave the center open.
+  {locker:[17,45],potion:[39,45],microscope:[82,45],notes:[18,73],desk:[61,77],computer:[83,73]},
+  // SECURITY CORRIDOR: distribute evidence stations along both walls.
+  {computer:[18,44],notes:[18,73],locker:[82,44],microscope:[82,70],desk:[50,78],potion:[38,45]}
+ ];
+ buttons.forEach((btn,i)=>{const obj=roomData[index].objects[i];btn.dataset.objectKey=obj[0];btn.className='lab-object '+obj[3];btn.setAttribute('onclick',"inspectObject('"+obj[0]+"')");btn.setAttribute('aria-label','Tương tác '+obj[2]);const art=btn.querySelector('.obj-art');if(art)art.textContent=obj[1];const label=btn.querySelector('.object-label');if(label)label.textContent=obj[2];const pos=roomLayouts[index][obj[0]]||[50,50];btn.style.left=pos[0]+'%';btn.style.top=pos[1]+'%';btn.style.right='auto';btn.style.bottom='auto';const oid=index+':'+obj[0];btn.classList.toggle('answered-object',answeredObjects.has(oid));btn.disabled=answeredObjects.has(oid);btn.title=answeredObjects.has(oid)?'Đã giải mã vật dụng này':'Đi đến gần rồi nhấn để kiểm tra';const sparkle=btn.querySelector('.sparkle');if(sparkle)sparkle.style.display=index===0&&obj[0]==='potion'?'block':'none';});
+ updateRoomLocks();
+ const prof=document.getElementById('professorNpc');if(prof)prof.style.display=index===0?'flex':'none';
+ document.getElementById('moveStatus').textContent='Đã tới: '+roomData[index].name;updateRoomProgress(index);
+ document.getElementById('objectInfo').innerHTML='<strong>🗺️ '+roomData[index].name+'</strong><span>'+roomData[index].hint+' Equilibrium sẽ gợi ý những vật cần kiểm tra.</span>';
+ document.getElementById('terminal').innerHTML='[KHU VỰC] '+roomData[index].name+'<br>[HỆ THỐNG] '+roomData[index].hint;
+ playerX=50;playerY=58;const player=document.getElementById('player');player.style.left=playerX+'%';player.style.top=playerY+'%';
+ tone(480,.08,'square',.05);tone(620,.09,'square',.04,.08);
+ assistantSays(['Mình đang quét phòng thí nghiệm. Hãy kiểm tra bàn pha chế và giá lọ thuốc phát sáng!','Phòng máy đây rồi! Bắt đầu với máy chủ và nhật ký truy cập lúc 21:14 nhé.','Đây là kho lạnh. Mình phát hiện tín hiệu quanh tủ mẫu A-17 và ống nghiệm xanh.','Camera hành lang có khoảng trống 47 giây. Kiểm tra màn hình và bản ghi bảo vệ nhé!'][index]);
+}
+function tickClockSound(){if(!sfxOn||gameEnded||seconds<=0)return;const c=audio();if(!c||!masterGain)return;const now=c.currentTime;const o=c.createOscillator(),g=c.createGain();o.type='square';o.frequency.setValueAtTime(seconds<=20?1250:820,now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(seconds<=20?.055:.025,now+.004);g.gain.exponentialRampToValueAtTime(.0001,now+.055);o.connect(g);g.connect(masterGain);o.start(now);o.stop(now+.06);}
+function questionTransitionSound(){if(!sfxOn)return;audio();tone(330,.08,'square',.045);tone(494,.09,'square',.045,.09);tone(660,.12,'triangle',.035,.19);}
+function audio(){
+  try{
+    if(!audioCtx){
+      const AC=window.AudioContext||window.webkitAudioContext;
+      if(!AC) return null;
+      audioCtx=new AC();
+      masterGain=audioCtx.createGain();
+      masterGain.gain.value=.75;
+      masterGain.connect(audioCtx.destination);
+    }
+    if(audioCtx.state==='suspended') audioCtx.resume().catch(()=>{});
+    return audioCtx;
+  }catch(err){console.warn('Audio không khả dụng:',err);return null}
+}
+function tone(freq=440,duration=.12,type='sine',volume=.07,delay=0){
+  if(!sfxOn)return;
+  const c=audio();if(!c||!masterGain)return;
+  const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+delay;
+  o.type=type;o.frequency.setValueAtTime(freq,t);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),t+.015);
+  g.gain.exponentialRampToValueAtTime(.0001,t+duration);
+  o.connect(g);g.connect(masterGain);o.start(t);o.stop(t+duration+.04);
+}
+function soundCorrect(){tone(523,.12,'sine',.09);tone(659,.14,'sine',.08,.11);tone(784,.22,'sine',.08,.23)}
+function soundWrong(){
+  tone(185,.22,'sawtooth',.11);tone(125,.32,'square',.07,.13);
+  const wrap=document.querySelector('.wrap');wrap.classList.remove('shake');void wrap.offsetWidth;wrap.classList.add('shake');
+  const ov=document.getElementById('alarmOverlay');ov.classList.remove('flash');void ov.offsetWidth;ov.classList.add('flash');
+  const sig=document.getElementById('signal');sig.classList.remove('alert');void sig.offsetWidth;sig.classList.add('alert');
+  document.getElementById('signalText').textContent='CẢNH BÁO • Trả lời sai';
+  setTimeout(()=>{sig.classList.remove('alert');document.getElementById('signalText').textContent='Tín hiệu ổn định'},1600);
+}
+function toggleSfx(){
+  sfxOn=!sfxOn;document.getElementById('sfxBtn').textContent='🔊 Âm thanh: '+(sfxOn?'bật':'tắt');
+  if(sfxOn){audio();tone(660,.12,'sine',.08)}
+}
+function toggleMusic(){
+  const c=audio();
+  if(!c){document.getElementById('musicBtn').textContent='⚠️ Trình duyệt không hỗ trợ âm thanh';return}
+  musicOn=!musicOn;
+  document.getElementById('musicBtn').textContent=musicOn?'🎵 Tắt nhạc nền':'🎵 Bật nhạc nền';
+  if(musicOn){playMusicBar();musicTimer=setInterval(playMusicBar,1500)}
+  else{clearInterval(musicTimer);musicTimer=null}
+}
+function playMusicBar(){
+  if(!musicOn)return;const c=audio();if(!c||!masterGain)return;
+  // A quiet, looping 8-bit mystery melody with bass notes.
+  const melody=[392,0,466.16,523.25,0,466.16,392,329.63];
+  const bass=[98,0,116.54,0,87.31,0,103.83,0];
+  const idx=musicStep++%melody.length, now=c.currentTime;
+  function note(freq,start,dur,wave,vol){
+    if(!freq)return;
+    const o=c.createOscillator(),g=c.createGain();
+    o.type=wave;o.frequency.setValueAtTime(freq,now+start);
+    g.gain.setValueAtTime(.0001,now+start);g.gain.exponentialRampToValueAtTime(vol,now+start+.02);
+    g.gain.setValueAtTime(vol,now+start+dur*.65);g.gain.exponentialRampToValueAtTime(.0001,now+start+dur);
+    o.connect(g);g.connect(masterGain);o.start(now+start);o.stop(now+start+dur+.02);
+  }
+  note(melody[idx],0,.32,'square',.025);note(bass[idx],0,.5,'triangle',.035);
+  note(melody[(idx+2)%melody.length],.38,.25,'square',.018);
+  note(melody[(idx+4)%melody.length],.76,.28,'square',.02);
+}
+function explosionSound(){
+  if(!sfxOn)return;const c=audio();if(!c||!masterGain)return;
+  const now=c.currentTime,o=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.setValueAtTime(130,now);o.frequency.exponentialRampToValueAtTime(28,now+.85);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.42,now+.04);g.gain.exponentialRampToValueAtTime(.0001,now+1.1);o.connect(g);g.connect(masterGain);o.start(now);o.stop(now+1.12);
+  const buffer=c.createBuffer(1,c.sampleRate*.75,c.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=(Math.random()*2-1)*(1-i/data.length);
+  const n=c.createBufferSource(),ng=c.createGain();n.buffer=buffer;ng.gain.setValueAtTime(.28,now);ng.gain.exponentialRampToValueAtTime(.0001,now+.75);n.connect(ng);ng.connect(masterGain);n.start(now);n.stop(now+.76);
+}
+function showThreat(){
+ if(gameEnded||seconds<=0||!document.getElementById('startArea').hidden&&current===0)return;
+ const messages=[
+  'Đừng phí thời gian, thám tử. Khi đồng hồ về 00:00, mọi thứ sẽ nổ tung!',
+  'Ta đã thay đổi dữ liệu trong phòng máy. Các người sẽ không kịp mở khóa đâu!',
+  'Chất X thuộc về ta! Hãy xem các người có giải mã được dấu vết này không.',
+  'Cảnh báo cuối: khóa cân bằng sắp quá tải. Chậm thêm chút nữa là phòng thí nghiệm sẽ phát nổ!'
+ ];document.getElementById('threatMessage').textContent=messages[Math.floor(Math.random()*messages.length)];
+ const ov=document.getElementById('threatOverlay');ov.classList.add('show');document.body.classList.add('critical');soundWrong();tone(90,.42,'sawtooth',.14);speakActor('profActor');
+}
+function dismissThreat(){document.getElementById('threatOverlay').classList.remove('show');document.body.classList.remove('critical');if(!gameEnded){document.getElementById('signalText').textContent='Cảnh báo đã ghi nhận — tiếp tục điều tra';}}
+function scheduleThreat(){clearTimeout(threatTimer);if(gameEnded)return;threatTimer=setTimeout(()=>{if(!gameEnded&&seconds>0){showThreat();setTimeout(()=>{dismissThreat();scheduleThreat()},6500)}},28000+Math.floor(Math.random()*17000));}
+function endGameFailure(){if(gameEnded)return;gameEnded=true;scoreChange(-100);showFinalScore();clearInterval(interval);clearTimeout(threatTimer);clearInterval(musicTimer);dismissThreat();explosionSound();document.body.classList.add('critical');const ov=document.getElementById('alarmOverlay');ov.classList.add('flash');const w=document.querySelector('.wrap');w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake');document.getElementById('timer').textContent='00:00';document.getElementById('signalText').textContent='HỆ THỐNG SỤP ĐỔ';document.getElementById('terminal').innerHTML='[CRITICAL ERROR] Khóa chưa được mở. Kích hoạt chuỗi tự hủy...';const end=document.getElementById('endOverlay'),panel=document.getElementById('endPanel');panel.className='end-panel fail';document.getElementById('endTitle').textContent='💥 CUỘC TÌM KIẾM THẤT BẠI';document.getElementById('endMessage').textContent='Hết thời gian! Bạn chưa mở khóa hệ thống. Phòng thí nghiệm phát nổ và Chất X vẫn chưa được tìm thấy.';document.getElementById('endButton').textContent='Thử lại từ đầu';end.classList.add('show');}
+function victoryCelebration(){
+ const end=document.getElementById('endOverlay'),panel=document.getElementById('endPanel');panel.className='end-panel win';document.getElementById('endTitle').textContent='🏆 CHIẾN THẮNG! VỤ ÁN ĐÃ ĐƯỢC PHÁ';document.getElementById('endMessage').textContent='Bạn đã tìm đúng hung thủ, mở khóa hệ thống và cứu phòng thí nghiệm!';document.getElementById('endButton').textContent='Chơi lại';end.classList.add('show');
+ const conf=document.createElement('div');conf.className='confetti';for(let i=0;i<90;i++){const bit=document.createElement('i');bit.style.left=(Math.random()*100)+'%';bit.style.animationDelay=(Math.random()*.9)+'s';bit.style.transform='rotate('+Math.floor(Math.random()*360)+'deg)';conf.appendChild(bit)}document.body.appendChild(conf);setTimeout(()=>conf.remove(),4000);
+ [523,659,784,1046,1318].forEach((f,i)=>tone(f,.35,'square',.09,i*.13));setTimeout(()=>tone(1568,.55,'square',.09,.02),650);
+}
+function speakActor(which){
+  ['profActor','assistActor','detActor'].forEach(id=>document.getElementById(id).classList.toggle('speaking',id===which));
+  setTimeout(()=>document.getElementById(which)?.classList.remove('speaking'),1000);
+}
+function moveDetective(x,y){
+  const world=document.getElementById('gameWorld'),player=document.getElementById('player');
+  if(!world||!player)return;
+  const rect=world.getBoundingClientRect(),pw=player.offsetWidth,ph=player.offsetHeight;
+  const stepX= Math.max(18,rect.width*.055), stepY=Math.max(18,rect.height*.09);
+  playerX=Math.max((pw/2/rect.width)*100,Math.min(100-(pw/2/rect.width)*100,playerX+x*stepX/rect.width*100));
+  playerY=Math.max((ph/2/rect.height)*100,Math.min(100-(ph/2/rect.height)*100,playerY+y*stepY/rect.height*100));
+  player.style.left=playerX+'%';player.style.top=playerY+'%';
+  player.classList.add('moving');clearTimeout(moveTimeout);moveTimeout=setTimeout(()=>player.classList.remove('moving'),230);
+  dx=Math.round((playerX-50)/5.5);dy=Math.round((playerY-58)/9);
+  document.getElementById('coords').textContent='X: '+Math.round(playerX)+'% • Y: '+Math.round(playerY)+'%';
+  document.getElementById('moveStatus').textContent='Thám tử đang di chuyển trong '+roomData[currentRoom].name.toLowerCase();
+  world.focus({preventScroll:true});
+  audio();tone(320+Math.abs(x+y)*55,.07,'square',.035);speakActor('detActor');
+  const worldRect=world.getBoundingClientRect();
+  if(playerX>80&&playerY>35&&playerY<78)document.getElementById('signalText').textContent='Đang kiểm tra thiết bị bên phải';
+  else if(playerX<25&&playerY>45)document.getElementById('signalText').textContent='Đang kiểm tra khu vực bên trái';
+  else document.getElementById('signalText').textContent='Tín hiệu ổn định';
+  if(playerX>83&&x>0&&currentRoom<3){if(completedRooms.has(currentRoom)){changeRoom(currentRoom+1);document.getElementById('moveStatus').textContent='Đã đi qua cửa tới '+roomData[currentRoom].name;}else{playerX=81;player.style.left=playerX+'%';document.getElementById('moveStatus').textContent='🔒 Cửa khóa! Giải mã đủ 6 vật dụng trước.';assistantSays('Cửa tiếp theo vẫn khóa. Hãy tìm và giải tất cả 6 câu đố trong căn phòng này trước nhé!');tone(180,.16,'square',.05);}}else if(playerX<17&&x<0&&currentRoom>0){changeRoom(currentRoom-1);document.getElementById('moveStatus').textContent='Đã quay lại '+roomData[currentRoom].name;}
+}
+const objectClues={
+ desk:{title:'🧪 Bàn thí nghiệm',text:'Trên mặt bàn có một vòng tròn ẩm và vài giọt dung dịch phát sáng. Giáo sư Mol xác nhận đây là nơi ông đặt bình thuốc X lần cuối.'},
+ potion:{title:'🧴 Giá đựng lọ thuốc',text:'Giá đựng vẫn còn dấu bụi hình trụ nhưng bình thuốc đã biến mất. Một vệt màu xanh phát sáng dẫn về phía máy tính.'},
+ computer:{title:'💻 Máy tính phân tích',text:'Màn hình ghi: “Nhiệt độ tăng bất thường lúc 21:14”. Equilibrium đang cố khôi phục nhật ký hệ thống.'},
+ notes:{title:'📓 Sổ ghi chép',text:'Một dòng bị gạch chân: “Không thay đổi nhiệt độ khi chưa ghi lại Kc”. Bên dưới là chữ viết vội của Giáo sư Mol.'},
+ locker:{title:'🗄️ Tủ lưu mẫu',text:'Tủ khóa bằng mã số. Có vết xước mới ở tay nắm — ai đó đã mở tủ gần đây.'},
+ microscope:{title:'🔬 Kính hiển vi',text:'Dưới kính có tinh thể màu xanh giống cặn còn sót lại ở vị trí đặt bình thuốc. Đây có thể là manh mối quan trọng.'}
+};
+function addFoundClue(key,item){
+ const clueKey=currentRoom+':'+key;
+ if(foundClueKeys.has(clueKey))return;
+ foundClueKeys.add(clueKey);
+ const list=document.getElementById('clueList');
+ const entry=document.createElement('article');entry.className='clue-entry';entry.dataset.clueKey=clueKey;
+ const title=document.createElement('strong');title.textContent=item.title;
+ const desc=document.createElement('p');desc.textContent=item.text;
+ const location=document.createElement('small');location.textContent='📍 '+roomData[currentRoom].name;
+ entry.append(title,desc,location);list.prepend(entry);
+ document.getElementById('clueBoardEmpty').style.display='none';
+ document.getElementById('clueBoardCount').textContent=foundClueKeys.size+' manh mối';
+ document.getElementById('clueCount').textContent=foundClueKeys.size+' / 24';
+ document.getElementById('progress').style.width=(answeredObjects.size/24*100)+'%';
+}
+function revealFinalCase(){
+ const cf=document.getElementById('caseFile');if(!cf)return;
+ if(cf.parentElement!==document.getElementById('clueBoard'))document.getElementById('clueBoard').appendChild(cf);
+ cf.classList.add('show');
+ if(!document.getElementById('suspectChoices').children.length){
+  const suspects=[['hacker','🧑‍💻 Hacker “Nhiệt Độ”','Có quyền truy cập phòng máy và hiểu cách thay đổi nhiệt độ để làm nhiễu cân bằng.'],['assistant','🤖 Trợ lý Equilibrium','Đã khôi phục dữ liệu nhưng không có động cơ lấy Chất X.'],['professor','🧪 Giáo sư Mol','Là chủ sở hữu Chất X và là người báo mất lọ thuốc.']];
+  document.getElementById('suspectChoices').innerHTML=suspects.map(x=>'<button type="button" class="suspect-choice" onclick="selectSuspect(&quot;'+x[0]+'&quot;,this)"><span style="font-size:1.6rem">'+x[1].split(' ')[0]+'</span><span><b>'+x[1].slice(x[1].indexOf(' ')+1)+'</b><br><small>'+x[2]+'</small></span></button>').join('');
+  document.getElementById('caseFeedback').className='feedback';
+ }
+ assistantSays('Bạn đã có đủ manh mối để lập giả thuyết. Mở hồ sơ cuối và đối chiếu bằng chứng trước khi kết luận nhé!');
+}
+function openObjectQuestion(item, objectId){
+ if(!Array.isArray(boss)||!boss.length)return;
+ if(answeredObjects.has(objectId)){assistantSays('Vật dụng này đã được giải mã rồi. Hãy tìm một đồ vật khác trong phòng nhé!');return;}
+ clearTimeout(activeQuestionTimer);objectQuestionLocked=false;activeObjectId=objectId;activeQuestionIndex=objectQuestionIndex%boss.length;
+ const q=boss[activeQuestionIndex];
+ document.getElementById('objectQuestionTitle').textContent='🔎 Câu đố vật chứng: '+item.title.replace(/^\S+\s/,'');
+ document.getElementById('objectQuestionPrompt').textContent=q.q;
+ document.getElementById('objectQuestionFeedback').className='feedback';
+ document.getElementById('objectQuestionFeedback').textContent='';
+ document.getElementById('objectQuestionHint').textContent='Chọn một đáp án. Mỗi vật dụng chỉ có thể giải mã một lần.';
+ document.getElementById('objectQuestionContinue').style.display='none';
+ document.getElementById('objectQuestionChoices').innerHTML=q.opts.map((x,i)=>'<button class="choice" onclick="answerObjectQuestion('+i+')">'+String.fromCharCode(65+i)+'. '+x+'</button>').join('');
+ document.getElementById('objectQuestionOverlay').classList.add('show');
+ questionTransitionSound();
+}
+function answerObjectQuestion(opt){
+ if(objectQuestionLocked||gameEnded||activeQuestionIndex<0||!activeObjectId)return;
+ objectQuestionLocked=true;
+ const q=boss[activeQuestionIndex],good=opt===q.a;
+ const buttons=[...document.querySelectorAll('#objectQuestionChoices .choice')];
+ buttons.forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add('correct');else if(i===opt&&!good)b.classList.add('wrong')});
+ const fb=document.getElementById('objectQuestionFeedback');fb.className='feedback show '+(good?'good':'bad');
+ if(good){
+   consecutiveObjectWrong=0;scoreChange(20);bossRight++;soundCorrect();
+   fb.textContent='CHÍNH XÁC! '+q.why+' (+20 điểm)';
+   assistantSays('Tuyệt vời! Vật chứng này đã được giải mã. Cùng tìm món đồ tiếp theo nhé!');
+   answeredObjects.add(activeObjectId);objectQuestionIndex++;refreshRoomObjects();updateRoomProgress(currentRoom);
+   const roomDone=roomData[currentRoom].objects.every(obj=>answeredObjects.has(currentRoom+':'+obj[0]));
+   if(roomDone&&!completedRooms.has(currentRoom)){
+     completedRooms.add(currentRoom);updateRoomLocks();roomCompleteSound();
+     document.getElementById('objectQuestionHint').textContent='🎉 Đã giải mã toàn bộ 6 vật dụng trong '+roomData[currentRoom].name+'!';
+     showCompletionNotice('PHÒNG ĐÃ ĐƯỢC GIẢI MÃ','Bạn đã trả lời xong cả 6 câu hỏi trong '+roomData[currentRoom].name+'. Cửa phòng tiếp theo đã mở khóa! Hãy bước qua cửa hoặc chọn phòng mới.');
+   }
+   if(completedRooms.size>=3){
+     document.getElementById('objectQuestionHint').textContent='🔓 Đã hoàn thành 3 trong 4 phòng! Hồ sơ chọn hung thủ đã được mở.';
+     revealFinalCase();finalCaseUnlockedSound();
+     showCompletionNotice('ĐÃ ĐỦ MANH MỐI — TÌM HUNG THỦ!','Bạn đã giải mã toàn bộ vật dụng ở '+completedRooms.size+'/4 phòng. Mở hồ sơ tuyệt mật, đối chiếu các bằng chứng và chọn hung thủ cuối cùng.');
+   }
+   document.getElementById('objectQuestionContinue').textContent='Tiếp tục khám phá →';
+   document.getElementById('objectQuestionContinue').style.display='inline-block';
+ }else{
+   wrongAnswers++;consecutiveObjectWrong++;scoreChange(-5);soundWrong();
+   fb.textContent='CHƯA CHÍNH XÁC. Vật chứng CHƯA được giải mã. Hãy thử lại câu này. (−5 điểm)';
+   assistantSays('Chưa đúng rồi, thám tử! Vật chứng vẫn chưa được giải mã — hãy thử lại.');
+   // A wrong answer never marks the object as solved; retry the same question.
+   document.getElementById('objectQuestionHint').textContent='Sai rồi! Vật chứng vẫn chưa được giải mã. Chọn đáp án khác để thử lại.';
+   document.getElementById('objectQuestionContinue').style.display='none';
+   if(consecutiveObjectWrong>=2){
+     consecutiveObjectWrong=0;
+     const lost=removeOneCollectedClue();
+     const message=lost?'Bạn trả lời sai 2 lần liên tiếp nên đã mất 1 manh mối đã thu thập. Hãy cẩn thận hơn, thám tử!':'Bạn trả lời sai 2 lần liên tiếp. Hiện chưa có manh mối nào để trừ.';
+     showCompletionNotice('⚠️ BỊ TRỪ MANH MỐI',message);
+   }
+   // Re-enable choices once the penalty notice is dismissed; do not reveal the correct answer.
+   buttons.forEach(b=>{b.disabled=false;b.classList.remove('correct','wrong')});
+   objectQuestionLocked=false;
+ }
+}
+function removeOneCollectedClue(){
+ const lastEntry=document.querySelector('#clueList .clue-entry');
+ if(!lastEntry)return false;
+ const key=lastEntry.dataset.clueKey;
+ if(key)foundClueKeys.delete(key);
+ lastEntry.remove();
+ const count=foundClueKeys.size;
+ document.getElementById('clueBoardCount').textContent=count+' manh mối';
+ document.getElementById('clueCount').textContent=count+' / 24';
+ document.getElementById('clueBoardEmpty').style.display=count?'none':'';
+ return true;
+}
+function roomCompleteSound(){if(!sfxOn)return;audio();[523,659,784,1046].forEach((f,i)=>tone(f,.18,'square',.075,i*.12));}
+function finalCaseUnlockedSound(){if(!sfxOn)return;audio();[440,554,659,880,1109].forEach((f,i)=>tone(f,.22,'triangle',.09,i*.14));tone(1318,.45,'square',.09,.75);}
+function showCompletionNotice(title,message){const el=document.getElementById('completionNotice');if(!el)return;document.getElementById('completionNoticeTitle').textContent=title;document.getElementById('completionNoticeText').textContent=message;el.hidden=false;}
+function dismissCompletionNotice(){const el=document.getElementById('completionNotice');if(el)el.hidden=true;}
+function updateRoomProgress(roomIndex){const done=roomData[roomIndex].objects.filter(obj=>answeredObjects.has(roomIndex+':'+obj[0])).length;const el=document.getElementById('roomProgress');if(el)el.textContent='Tiến độ phòng: '+done+' / '+roomData[roomIndex].objects.length+' vật dụng đã giải mã'+(completedRooms.has(roomIndex)?' ✓ HOÀN TẤT':'');}
+function refreshRoomObjects(){const world=document.getElementById('gameWorld');if(!world)return;world.querySelectorAll('.lab-object').forEach((btn,i)=>{const obj=roomData[currentRoom].objects[i];if(!obj)return;const oid=currentRoom+':'+obj[0],done=answeredObjects.has(oid);btn.classList.toggle('answered-object',done);btn.disabled=done;btn.title=done?'Đã giải mã vật dụng này':'Di chuyển lại gần và tương tác để giải mã';});}
+function closeObjectQuestion(){clearTimeout(activeQuestionTimer);document.getElementById('objectQuestionOverlay').classList.remove('show');objectQuestionLocked=false;document.getElementById('objectQuestionContinue').textContent='Tiếp tục khám phá →';}
+function inspectObject(key){
+ const objectId=currentRoom+':'+key;
+ if(answeredObjects.has(objectId)){assistantSays('Món đồ này đã được giải mã rồi! Hãy tìm một vật dụng khác chưa có dấu ✓ nhé.');document.getElementById('objectInfo').innerHTML='<strong>✅ Đã hoàn thành vật chứng</strong><span>Vật dụng này không thể trả lời lại. Hãy khám phá món đồ khác trong phòng.</span>';return;}
+ const targetBtn=[...document.querySelectorAll('#gameWorld .lab-object')].find(b=>b.dataset.objectKey===key);
+ const targetRect=targetBtn?.getBoundingClientRect(),worldRect=document.getElementById('gameWorld').getBoundingClientRect();
+ const targetPos=targetRect?[((targetRect.left+targetRect.width/2-worldRect.left)/worldRect.width)*100,((targetRect.top+targetRect.height/2-worldRect.top)/worldRect.height)*100]:[50,50];
+ const nearEnough=Math.hypot((playerX-targetPos[0])*worldRect.width/100,(playerY-targetPos[1])*worldRect.height/100)<115;
+ if(!nearEnough){
+  document.getElementById('objectInfo').innerHTML='<strong>🚶 Hãy đến gần hơn</strong><span>Thám tử đang đứng hơi xa món đồ này. Di chuyển lại gần rồi nhấn tương tác lần nữa nhé.</span>';
+  document.getElementById('moveStatus').textContent='Cần đến gần '+(roomData[currentRoom].objects.find(o=>o[0]===key)?.[2]||'đồ vật');
+  assistantSays('Mình đánh dấu được món đồ rồi! Hãy đi lại gần nó trước nhé — dùng WASD hoặc các nút mũi tên.');tone(240,.12,'square',.04);return;
+ }
+ let item=objectClues[key];const roomItem=roomClues[currentRoom]&&roomClues[currentRoom][key];if(roomItem)item={title:roomItem[0],text:roomItem[1]};if(!item)return;
+ const panel=document.getElementById('objectInfo');panel.innerHTML='<strong>'+item.title+'</strong><span>'+item.text+'</span>';
+ addFoundClue(key,item);
+ document.getElementById('moveStatus').textContent='Đã kiểm tra: '+item.title.replace(/^\S+\s/, '');
+ document.getElementById('terminal').innerHTML='[MANH MỐI] '+item.text;
+ tone(660,.08,'square',.045);tone(880,.1,'square',.035,.08);assistantSays('Mình đã ghi nhận manh mối này. Hãy kết nối nó với những gì tìm được ở các phòng khác nhé!');speakActor(key==='computer'?'assistActor':'profActor');
+ if(key==='potion'){const bubble=document.querySelector('.npc-bubble');if(bubble)bubble.textContent='Đó là giá bình thuốc X! Hãy tìm manh mối quanh đây.';}
+ openObjectQuestion(item,objectId);
+}
+document.addEventListener('keydown',e=>{
+  const target=e.target;
+  if(['INPUT','TEXTAREA','SELECT'].includes(target.tagName)||target.isContentEditable)return;
+  const k=e.key.toLowerCase();
+  if(['arrowup','arrowdown','arrowleft','arrowright','w','a','s','d'].includes(k)){
+    e.preventDefault();
+    if(k==='arrowup'||k==='w')moveDetective(0,-1);
+    if(k==='arrowdown'||k==='s')moveDetective(0,1);
+    if(k==='arrowleft'||k==='a')moveDetective(-1,0);
+    if(k==='arrowright'||k==='d')moveDetective(1,0);
+  }
+});
+document.addEventListener('visibilitychange',()=>{if(document.hidden&&musicTimer){clearInterval(musicTimer);musicTimer=null}else if(!document.hidden&&musicOn&&!musicTimer){playMusicBar();musicTimer=setInterval(playMusicBar,1500)}});
+
+const stages=['intro','stage1','stage2','stage3','stage4'];
+const boss=[
+ {q:'Trong quy trình Haber, các chất phản ứng để tạo ammonia là gì?',opts:['N₂ và H₂','N₂ và O₂','H₂ và O₂'],a:0,why:'Phản ứng Haber: N₂(g) + 3H₂(g) ⇌ 2NH₃(g).'},
+ {q:'Phản ứng tổng hợp NH₃ tỏa nhiệt. Hạ nhiệt độ sẽ làm cân bằng dịch chuyển thế nào?',opts:['Theo chiều tạo NH₃','Theo chiều phân hủy NH₃','Không ảnh hưởng'],a:0,why:'Hạ nhiệt độ ưu tiên chiều tỏa nhiệt, tức chiều thuận tạo NH₃.'},
+ {q:'Với N₂(g) + 3H₂(g) ⇌ 2NH₃(g), tăng áp suất làm cân bằng dịch chuyển theo chiều nào?',opts:['Chiều nghịch, nhiều mol khí hơn','Chiều thuận, ít mol khí hơn','Không dịch chuyển'],a:1,why:'Bên trái có 4 mol khí, bên phải có 2 mol khí; tăng áp suất ưu tiên phía ít mol khí.'},
+ {q:'Chất xúc tác có làm thay đổi giá trị Kc ở cùng nhiệt độ không?',opts:['Có, Kc tăng','Có, Kc giảm','Không'],a:2,why:'Chất xúc tác làm tăng tốc độ cả hai chiều, không làm thay đổi Kc.'},
+ {q:'Khi hệ đạt cân bằng hóa học, nhận định nào đúng?',opts:['Phản ứng dừng hoàn toàn','Tốc độ thuận bằng tốc độ nghịch','Nồng độ các chất bằng nhau'],a:1,why:'Cân bằng là cân bằng động: hai tốc độ bằng nhau, nồng độ không đổi nhưng không nhất thiết bằng nhau.'},
+ {q:'Với phản ứng thuận nghịch, khi tăng nồng độ chất phản ứng, hệ thường chuyển dịch thế nào?',opts:['Theo chiều tiêu thụ chất vừa thêm','Theo chiều tạo thêm chất vừa thêm','Không thể dự đoán'],a:0,why:'Theo Le Chatelier, hệ chuyển dịch theo chiều làm giảm tác động của sự tăng nồng độ.'},
+ {q:'Yếu tố nào làm thay đổi hằng số cân bằng Kc?',opts:['Thêm chất xúc tác','Thay đổi nhiệt độ','Thay đổi nồng độ ban đầu'],a:1,why:'Kc chỉ phụ thuộc vào nhiệt độ đối với một phản ứng xác định.'},
+ {q:'Nếu tăng áp suất của hệ khí ở nhiệt độ không đổi, cân bằng chuyển về phía nào?',opts:['Phía có nhiều mol khí hơn','Phía có ít mol khí hơn','Luôn chuyển sang phải'],a:1,why:'Tăng áp suất ưu tiên phía có tổng số mol khí ít hơn; nếu hai bên bằng nhau thì gần như không dịch chuyển.'},
+ {q:'Với A(g) ⇌ B(g), Kc = [B]/[A]. Tại cân bằng [B]=0,6 M và [A]=0,2 M. Kc bằng bao nhiêu?',opts:['0,3','3','1,2'],a:1,why:'Kc = 0,6/0,2 = 3.'},
+ {q:'Phản ứng thuận thu nhiệt. Khi tăng nhiệt độ, cân bằng dịch chuyển theo chiều nào?',opts:['Chiều thuận','Chiều nghịch','Không dịch chuyển'],a:0,why:'Tăng nhiệt độ ưu tiên chiều thu nhiệt, ở đây là chiều thuận.'},
+ {q:'Trong biểu thức Kc của phản ứng N₂ + 3H₂ ⇌ 2NH₃, số mũ của [H₂] là bao nhiêu?',opts:['1','2','3'],a:2,why:'Số mũ trong biểu thức cân bằng là hệ số phương trình: Kc=[NH₃]²/([N₂][H₂]³).'},
+ {q:'Khi thêm khí trơ vào bình thể tích không đổi, áp suất riêng phần các chất phản ứng thay đổi ra sao?',opts:['Tăng đồng loạt','Giảm đồng loạt','Không đổi'],a:2,why:'Ở thể tích và nhiệt độ không đổi, nồng độ và áp suất riêng phần của các chất phản ứng không đổi.'},
+ {q:'Nếu Qc < Kc, hệ sẽ diễn biến theo chiều nào để đạt cân bằng?',opts:['Chiều thuận tạo sản phẩm','Chiều nghịch tạo chất phản ứng','Đã cân bằng'],a:0,why:'Qc < Kc nghĩa là sản phẩm còn thiếu so với cân bằng, nên phản ứng diễn biến theo chiều thuận.'},
+ {q:'Nếu Qc > Kc, hệ sẽ diễn biến theo chiều nào?',opts:['Chiều thuận','Chiều nghịch','Không dịch chuyển'],a:1,why:'Qc > Kc nghĩa là có tương đối nhiều sản phẩm, hệ chuyển dịch theo chiều nghịch.'},
+ {q:'Trong biểu thức Kc, chất rắn tinh khiết có được đưa vào không?',opts:['Có, luôn luôn','Không','Chỉ khi có chất xúc tác'],a:1,why:'Nồng độ chất rắn tinh khiết không đưa vào biểu thức hằng số cân bằng.'},
+ {q:'Với CaCO₃(s) ⇌ CaO(s) + CO₂(g), biểu thức Kp (hoặc dạng theo áp suất khí) phụ thuộc vào chất nào?',opts:['CaCO₃ và CaO','Chỉ CO₂','Tất cả các chất'],a:1,why:'Các chất rắn tinh khiết bị lược khỏi biểu thức; chỉ còn áp suất CO₂.'},
+ {q:'Thêm chất xúc tác vào hệ đang cân bằng sẽ làm gì?',opts:['Dịch chuyển cân bằng sang phải','Dịch chuyển cân bằng sang trái','Giúp hệ đạt cân bằng nhanh hơn nhưng không dịch chuyển vị trí cân bằng'],a:2,why:'Chất xúc tác tăng tốc độ hai chiều, không làm thay đổi thành phần cân bằng.'},
+ {q:'Với phản ứng 2SO₂(g) + O₂(g) ⇌ 2SO₃(g), tăng áp suất sẽ ưu tiên chiều nào?',opts:['Tạo SO₃','Tạo SO₂ và O₂','Không ảnh hưởng dù số mol khí khác nhau'],a:0,why:'Vế trái có 3 mol khí, vế phải có 2 mol khí; tăng áp suất ưu tiên tạo SO₃.'},
+ {q:'Với phản ứng tỏa nhiệt, khi giảm nhiệt độ, hằng số cân bằng thường thay đổi thế nào?',opts:['Tăng','Giảm','Không đổi'],a:0,why:'Giảm nhiệt độ ưu tiên chiều tỏa nhiệt, nên với phản ứng thuận tỏa nhiệt, K tăng.'},
+ {q:'Một hệ cân bằng bị lấy bớt sản phẩm. Hệ sẽ phản ứng thế nào?',opts:['Tạo thêm sản phẩm','Phân hủy thêm sản phẩm','Ngừng phản ứng'],a:0,why:'Hệ chuyển dịch theo chiều tạo ra phần sản phẩm đã bị lấy đi.'}
+];
+function startGame(){audio();assistantSays('Bắt đầu thôi! Di chuyển giữa các phòng, kiểm tra đồ vật và đừng quên theo dõi đồng hồ nhé.');speakActor('profActor');document.getElementById('startArea').style.display='none';document.getElementById('intro').classList.remove('active');document.getElementById('stage1').classList.add('active');current=1;updateUI();document.getElementById('sceneTitle').textContent='Dấu vết đầu tiên được phát hiện';document.getElementById('sceneText').textContent='Một bảng ghi nồng độ bị bỏ quên cạnh bàn thí nghiệm. Equilibrium đã khôi phục được dữ liệu.';document.getElementById('terminal').innerHTML='[EQUILIBRIUM] Phân tích mẫu hoàn tất.<br>[HINT] Bình tĩnh thay số vào biểu thức Kc.';interval=setInterval(tick,1000);scheduleThreat()}
+function tick(){if(gameEnded)return;if(seconds>0){seconds--;document.getElementById('timer').textContent=fmt(seconds);tickClockSound();if(seconds===60||seconds===30||seconds===10){tone(220,.18,'square',.09);document.getElementById('signalText').textContent='CẢNH BÁO: CÒN '+seconds+' GIÂY!';assistantSays(seconds<=10?'Còn rất ít thời gian! Tập trung vào manh mối quan trọng nhé!':'Đồng hồ vẫn đang chạy. Chúng ta làm được mà, thám tử!');}if(seconds===0)endGameFailure()}else endGameFailure()}
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0')}
+function updateUI(){document.getElementById('levelLabel').textContent=current===0?'Chưa bắt đầu':current===4?'Màn 4 / 4':'Màn '+current+' / 4';document.getElementById('clueCount').textContent=foundClueKeys.size+' / 24';document.getElementById('progress').style.width=(clues/4*100)+'%';document.getElementById('stageTag').textContent=current===1?'MANH MỐI 01':current===2?'MANH MỐI 02':current===3?'MANH MỐI 03':current===4?'BOSS • 05 CÂU HỎI':'HƯỚNG DẪN'}
+function showStage(n){stages.forEach(id=>document.getElementById(id).classList.remove('active'));document.getElementById('stage'+n).classList.add('active');current=n;updateUI()}
+function feedback(id,good,msg){let el=document.getElementById(id);el.className='feedback show '+(good?'good':'bad');el.innerHTML=msg}
+function answer(level,opt){if(answered[level])return;let good=(level===1?opt===1:opt===1);if(level===1){good=opt===1;feedback('fb1',good,good?'Chính xác! Kc = 0,8² / (0,2 × 0,2) = 16. Bạn tìm được dấu vân tay thứ nhất.':'Chưa đúng. Tử số là 0,8² = 0,64; mẫu số là 0,2 × 0,2 = 0,04 nên Kc = 16.');}
+if(level===2){good=opt===1;feedback('fb2',good,good?'Chính xác! Tăng nhiệt độ ưu tiên chiều thu nhiệt, tức chiều nghịch. Lời khai của nghi phạm Nhiệt Độ đã bị lật tẩy.':'Hãy nhớ: hệ chống lại tác động. Phản ứng thuận tỏa nhiệt nên tăng nhiệt độ làm cân bằng chuyển dịch theo chiều nghịch.');}
+if(good){soundCorrect();scoreChange(60);speakActor('assistActor');assistantSays('Tuyệt lắm! Một manh mối quan trọng đã được xác nhận.');answered[level]=true;clues++;updateUI();document.querySelectorAll('#stage'+level+' .choice').forEach(b=>b.disabled=true);let next=level+1;setTimeout(()=>{if(next<=4){showStage(next);document.getElementById('sceneTitle').textContent=['','','Mật mã phòng máy đã mở','Két sắt đã được mở','Khôi phục quyền điều khiển'][next]||'Tiếp tục điều tra';document.getElementById('sceneText').textContent=next===2?'Dữ liệu cho thấy kẻ gian đã lợi dụng nhiệt độ để làm hệ thống chuyển dịch. Tiếp tục thẩm vấn.':next===3?'Bên trong phòng máy có một két sắt với bảng dữ liệu cân bằng.':next===4?'Bạn đã đến bảng điều khiển cuối cùng. Hoàn thành 5 câu hỏi để đóng hồ sơ.':'';document.getElementById('terminal').innerHTML='[EVIDENCE] Manh mối đã được xác nhận.<br>[SYSTEM] Đang mở khóa khu vực tiếp theo…';if(next===4)renderBoss()}},3500)}else{wrongAnswers++;scoreChange(-15);soundWrong();speakActor('profActor');assistantSays(['Không sao đâu! Hãy đọc kỹ công thức rồi thử lại nhé.','Sai một câu không sao cả. Mình tin bạn sẽ tìm ra quy luật!','Bình tĩnh nào, thám tử! Hãy xem lại manh mối mình vừa phân tích nhé.'][wrongAnswers%3]);}}
+function checkCode(){if(answered[3])return;let val=document.getElementById('code').value.trim();if(val==='0667'){soundCorrect();scoreChange(80);assistantSays('Két sắt đã mở! Bạn vừa tiến thêm một bước gần tới sự thật.');speakActor('assistActor');answered[3]=true;clues++;updateUI();feedback('fb3',true,'Két sắt mở! Kc = 0,4 / 0,6 ≈ 0,667. Mã hợp lệ: 0667.');setTimeout(()=>{showStage(4);document.getElementById('sceneTitle').textContent='Khôi phục quyền điều khiển';document.getElementById('sceneText').textContent='Mã két sắt chính xác. Dữ liệu cuối cùng đã được khôi phục; hãy vượt qua bài kiểm tra của Equilibrium.';renderBoss()},3500)}else {wrongAnswers++;scoreChange(-15);soundWrong();assistantSays('Mã chưa đúng thôi! Hãy dùng dữ kiện A còn 0,6 và B tạo thành 0,4 để tính lại nhé.');feedback('fb3',false,'Mã chưa đúng. Hãy tính Kc = [B]/[A] = 0,4/0,6 ≈ 0,667 rồi làm tròn thành 0667.')}
+}
+function renderBoss(){if(bossIndex>=boss.length){finishBoss();return}questionTransitionSound();document.getElementById('bossProgress').textContent='Câu '+(bossIndex+1)+' / '+boss.length+' • Đúng '+bossRight;document.getElementById('bossQuestion').innerHTML='<p><b>'+boss[bossIndex].q+'</b></p>';document.getElementById('bossChoices').innerHTML=boss[bossIndex].opts.map((x,i)=>'<button class="choice" onclick="bossAnswer('+i+')">'+String.fromCharCode(65+i)+'. '+x+'</button>').join('');document.getElementById('fb4').className='feedback'}
+function bossAnswer(opt){if(gameEnded||seconds<=0)return;let q=boss[bossIndex];let good=opt===q.a;if(good){soundCorrect();speakActor('assistActor');bossRight++;scoreChange(50);assistantSays('Chính xác! Bạn đang làm rất tốt — cứ tiếp tục nhé!');seconds=Math.min(540,seconds+8);document.getElementById('timer').textContent=fmt(seconds);feedback('fb4',true,'Chính xác! '+q.why+' (+8 giây khôi phục)')}else{wrongAnswers++;scoreChange(-20);soundWrong();assistantSays(['Đừng nản nhé! Đọc phần giải thích, manh mối này sẽ giúp ích cho câu sau.','Bạn vẫn còn cơ hội! Hãy nhớ nguyên lý Le Chatelier nhé.','Mình ở đây hỗ trợ bạn. Hít thở sâu rồi tiếp tục nào!'][wrongAnswers%3]);seconds=Math.max(0,seconds-12);document.getElementById('timer').textContent=fmt(seconds);feedback('fb4',false,'Chưa chính xác. '+q.why+' (−12 giây)')}document.querySelectorAll('#bossChoices button').forEach(b=>b.disabled=true);bossIndex++;if(seconds<=0){endGameFailure();return}setTimeout(()=>{if(!gameEnded){if(bossIndex<boss.length)renderBoss();else finishBoss()}},3800)}
+function finishBoss(){clues++;updateUI();document.getElementById('bossQuestion').innerHTML='<p><b>Đã hoàn tất '+boss.length+' câu hỏi!</b></p><p>Bạn trả lời đúng '+bossRight+'/'+boss.length+' câu. Bây giờ hãy mở hồ sơ và chọn hung thủ cuối cùng.</p>';document.getElementById('bossChoices').innerHTML='';document.getElementById('bossProgress').textContent='HỒ SƠ CUỐI CÙNG';const cf=document.getElementById('caseFile');cf.classList.add('show');const suspects=[['hacker','🧑‍💻 Hacker “Nhiệt Độ”','Có quyền truy cập phòng máy và hiểu cách thay đổi nhiệt độ để làm nhiễu cân bằng.'],['assistant','🤖 Trợ lý Equilibrium','Đã khôi phục dữ liệu nhưng không có động cơ lấy Chất X.'],['professor','🧪 Giáo sư Mol','Là chủ sở hữu Chất X và là người báo mất lọ thuốc.']];document.getElementById('suspectChoices').innerHTML=suspects.map(x=>'<button type="button" class="suspect-choice" onclick="selectSuspect(&quot;'+x[0]+'&quot;,this)"><span style="font-size:1.6rem">'+x[1].split(' ')[0]+'</span><span><b>'+x[1].slice(x[1].indexOf(' ')+1)+'</b><br><small>'+x[2]+'</small></span></button>').join('');document.getElementById('caseFeedback').className='feedback';} 
+function selectSuspect(id,el){selectedSuspect=id;document.querySelectorAll('.suspect-choice').forEach(b=>b.classList.remove('selected'));el.classList.add('selected');}
+function submitAccusation(){if(!selectedSuspect){feedback('caseFeedback',false,'Hãy chọn một nghi phạm trong hồ sơ trước khi chốt kết luận.');return}if(selectedSuspect==='hacker'){feedback('caseFeedback',true,'Kết luận chính xác! Nhật ký cho thấy Hacker “Nhiệt Độ” đã xâm nhập hệ thống lúc 21:14 và lợi dụng thay đổi nhiệt độ để lấy Chất X.');setTimeout(winGame,1000)}else{wrongAnswers++;scoreChange(-25);soundWrong();assistantSays('Chưa đúng hung thủ, nhưng đừng vội kết luận! Hãy đối chiếu nhật ký lúc 21:14 với dấu vết nhiệt độ nhé.');feedback('caseFeedback',false,'Kết luận chưa khớp với bằng chứng. Hãy xem lại thời điểm 21:14, dấu vết ở máy tính và manh mối về nhiệt độ. Bạn vẫn còn thời gian để chọn lại.')}}
+function winGame(){if(gameEnded)return;gameEnded=true;scoreChange(150);showFinalScore();soundCorrect();speakActor('profActor');clearInterval(interval);clearTimeout(threatTimer);clearInterval(musicTimer);dismissThreat();document.getElementById('badge').classList.add('show');document.getElementById('stage4').classList.remove('active');document.getElementById('stageTag').textContent='HỒ SƠ ĐÃ ĐÓNG';document.getElementById('sceneTitle').textContent='Vụ án đã được phá';document.getElementById('sceneText').textContent='Dựa vào các manh mối, bạn xác định thủ phạm là hacker “Nhiệt Độ” — kẻ đã lợi dụng sự thay đổi nhiệt độ để gây nhiễu hệ cân bằng. Chất X được tìm thấy trong tủ lưu mẫu an toàn.';document.getElementById('terminal').innerHTML='[SYSTEM] Khóa cân bằng đã được vô hiệu hóa.<br>[CASE] CHỈ HUY XÁC NHẬN: VỤ ÁN KHÉP LẠI.';document.getElementById('progress').style.width='100%';document.getElementById('levelLabel').textContent='Hoàn thành';document.getElementById('clueCount').textContent='4 / 4';victoryCelebration()}
+function restart(){clearInterval(interval);clearTimeout(threatTimer);clearInterval(musicTimer);if(audioCtx&&audioCtx.state!=='closed')audioCtx.close();location.reload()}
+</script>
+</body>
+</html>
